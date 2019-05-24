@@ -64,7 +64,8 @@ public class MybatisHelperConfigurer {
             "      xmlResource,\n" +
             "      configuration.getSqlFragments(),\n" +
             "      type.getName())" +
-            "   .parse();");
+            "   .parse();" +
+            "inputStream = null;");
 
     aClass.toClass();
   }
