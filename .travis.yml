@@ -1,0 +1,13 @@
+language: java
+jdk: oraclejdk8
+install: true
+script: mvn clean package -DskipTests -Dmaven.javadoc.skip=true -B -V
+branches:
+  only:
+    - develop
+cache:
+  directories:
+    - $HOME/.m2
+notifications:
+  email:
+    - gaigeshen@qq.com
