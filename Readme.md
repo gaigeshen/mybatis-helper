@@ -114,7 +114,7 @@ Some "dao" methods requires condition object parameter, here are some examples f
            </environment>
        </environments>
        <mappers>
-           <mapper class="me.gaigeshen.mybatis.helper.test.UserDao" />
+           <mapper class="me.gaigeshen.mybatis.helper.test.mapper.UserDao" />
        </mappers>
    </configuration>
    ```

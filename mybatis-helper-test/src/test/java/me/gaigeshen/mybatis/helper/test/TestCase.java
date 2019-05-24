@@ -3,6 +3,8 @@ package me.gaigeshen.mybatis.helper.test;
 import me.gaigeshen.mybatis.helper.Condition;
 import me.gaigeshen.mybatis.helper.MybatisHelperConfigurer;
 import me.gaigeshen.mybatis.helper.PageData;
+import me.gaigeshen.mybatis.helper.test.entity.User;
+import me.gaigeshen.mybatis.helper.test.mapper.UserDao;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

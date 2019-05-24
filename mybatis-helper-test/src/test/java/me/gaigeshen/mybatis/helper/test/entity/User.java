@@ -1,4 +1,4 @@
-package me.gaigeshen.mybatis.helper.test;
+package me.gaigeshen.mybatis.helper.test.entity;
 
 import me.gaigeshen.mybatis.helper.BaseEntity;
 import me.gaigeshen.mybatis.helper.annotations.Table;
