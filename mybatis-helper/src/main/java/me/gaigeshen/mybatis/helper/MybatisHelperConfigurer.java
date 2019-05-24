@@ -25,10 +25,14 @@ public class MybatisHelperConfigurer {
    * This method <b>MUST</b> called first before mybatis {@link org.apache.ibatis.session.SqlSessionFactory} build
    *
    * @return This configurer
-   * @throws Exception Any exception
+   * @throws MybatisHelperConfigurerException May throws this exception if could not configure
    */
-  public MybatisHelperConfigurer configure() throws Exception {
-    configureMapperAnnotationBuilder();
+  public MybatisHelperConfigurer configure() {
+    try {
+      configureMapperAnnotationBuilder();
+    } catch (NotFoundException | CannotCompileException e) {
+      throw new MybatisHelperConfigurerException("Could not configure", e);
+    }
     return this;
   }
 
