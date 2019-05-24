@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="useGeneratedKeys" value="true"/>
+    </settings>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://192.168.10.116:3306/mybatis-helper-demo?useSSL=false"/>
+                <property name="username" value="mybatis-helper-demo"/>
+                <property name="password" value="MybatisHelperDemo123,"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper class="me.gaigeshen.mybatis.helper.test.UserDao" />
+    </mappers>
+</configuration>
