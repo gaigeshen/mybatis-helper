@@ -41,6 +41,55 @@ If you want to customize table name or column name, you can use `Table` and `Col
 |     update     |                     Update entity by id                      |
 | updateNullable | Update entity by id, and null value properties update to null |
 
+### Condition
+
+Some "dao" methods requires condition object parameter, here are some examples for you:
+
+1. Find by page
+
+   ```java
+   // select identity, username from user limit 0, 10;
+   userDao.find(new Condition<>(User.class).page(1).size(10));
+   ```
+
+2. Find by page and sort
+
+   ```java
+   // select identity, username from user order by identity desc limit 0, 10;
+   userDao.find(new Condition<>(User.class).page(1).size(10).desc("identity"));
+   ```
+
+3. Find by conditions
+
+   ```java
+   // select identity, username from user where username = 'jack';
+   userDao.find(new Condition<>(User.class).where().equalTo("username","jack").end());
+   ```
+
+4. Delete by conditions
+
+   ```java
+   // delete from user where username like '%ja%';
+   userDao.delete(new Condition<>(User.class).where().like("username","ja").end());
+   // delete from user where username like 'ja%';
+   userDao.delete(new Condition<>(User.class).where().llike("username","ja").end());
+   ```
+
+5. Count by conditions
+
+   ```java
+   // select count(1) from user where username = 'jack';
+   userDao.count(new Condition<>(User.class).where().equalTo("username","jack").end());
+   ```
+
+6. Exists by conditions
+
+   ```java
+   // select count(1) from user where username = 'jack';
+   // Translate to boolean value automatically
+   userDao.exists(new Condition<>(User.class).where().equalTo("username","jack").end());
+   ```
+
 ### How to configure without spring support
 
 1. Configuration file `mybatis-config.xml`
