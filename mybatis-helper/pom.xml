@@ -11,6 +11,10 @@
 
     <artifactId>mybatis-helper</artifactId>
 
+    <name>mybatis-helper</name>
+    <description>mybatis-helper module</description>
+    <url>https://github.com/gaigeshen/mybatis-helper</url>
+
     <dependencies>
         <dependency>
             <groupId>org.mybatis</groupId>
