@@ -142,5 +142,35 @@ Some "dao" methods requires condition object parameter, here are some examples f
 
 ### How to configure with spring support
 
-To be continue ...
+JUST replace `SqlSessionFactoryBean` to `MybatisHelperSqlSessionFactoryBean`, like this:
+
+```java
+@MapperScan("me.gaigeshen.mybatis.helper.spring.mapper")
+@Configuration
+public class MybatisHelperConfiguration {
+  // Replace SqlSessionFactoryBean to MybatisHelperSqlSessionFactoryBean
+  // to enable mybatis-helper-spring features
+  @Bean
+  public MybatisHelperSqlSessionFactoryBean mybatisHelperSqlSessionFactoryBean() throws Exception {
+    MybatisHelperSqlSessionFactoryBean factoryBean = new MybatisHelperSqlSessionFactoryBean();
+    factoryBean.setDataSource(dataSource());
+
+    org.apache.ibatis.session.Configuration cfg = new org.apache.ibatis.session.Configuration();
+    cfg.setUseGeneratedKeys(true);
+    factoryBean.setConfiguration(cfg);
+
+    return factoryBean;
+  }
+
+  @Bean
+  public DataSource dataSource() throws Exception {
+    JDBCDataSource dataSource = new JDBCDataSource();
+    dataSource.setUrl("jdbc:hsqldb:mem:testdb");
+    dataSource.setUser("SA");
+    dataSource.setPassword("");
+    initializeDatabase(dataSource);
+    return dataSource;
+  }
+}
+```
 
