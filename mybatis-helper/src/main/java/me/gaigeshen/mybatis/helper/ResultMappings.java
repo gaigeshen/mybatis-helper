@@ -26,7 +26,7 @@ final class ResultMappings {
   static void initialize(Configuration configuration) {
     Collection<ResultMap> resultMaps = configuration.getResultMaps();
     resultMaps.forEach(rm -> {
-      mappings.put(rm.getType(), rm.getResultMappings());
+      mappings.putIfAbsent(rm.getType(), rm.getResultMappings());
     });
   }
 

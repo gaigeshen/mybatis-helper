@@ -9,33 +9,23 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mybatis-helper</artifactId>
+    <artifactId>mybatis-helper-spring</artifactId>
 
-    <name>mybatis-helper</name>
-    <description>mybatis-helper module</description>
+    <name>mybatis-helper-spring</name>
+    <description>mybatis-helper-spring module</description>
     <url>https://github.com/gaigeshen/mybatis-helper</url>
+
 
     <dependencies>
         <dependency>
+            <groupId>me.gaigeshen.mybatis</groupId>
+            <artifactId>mybatis-helper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>${mybatis.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.8.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.26</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-            <scope>runtime</scope>
+            <artifactId>mybatis-spring</artifactId>
+            <version>2.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -48,6 +38,18 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.1.6.RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>5.1.6.RELEASE</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
