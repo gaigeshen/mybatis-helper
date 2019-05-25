@@ -6,74 +6,72 @@
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/me.gaigeshen.mybatis/mybatis-helper.svg)](https://oss.sonatype.org/content/repositories/snapshots/me/gaigeshen/mybatis/mybatis-helper)
 [![GitHub last commit](https://img.shields.io/github/last-commit/gaigeshen/mybatis-helper.svg)](https://github.com/gaigeshen/mybatis-helper/commits)
 
-> For Chinese version of this file, please click [Readme_zh_CN.md](Readme_zh_CN.md)
+### 简介
 
-### Introduction
+mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring2.0.1 的集成测试，只需要将实体类继承 `BaseEntity` 以及将数据访问对象接口继承 `Dao` 即可拥有基本的单表增删查改操作。
 
-Helper tools for mybatis, this tools **TESTed** with mybatis version 3.5.1 and mybatis-spring version 2.0.1, after extends `BaseEntity` and `Dao` interface, you don't have to write mapper xml file if **JUST** use basic CRUD [methods](#Methods-of-data-access-object).
+### 关于实体类
 
-### About entity
+#### 基本实体抽象类
 
-#### Base entity
+所有的实体类都应该继承 `BaseEntity`，否则那些基本的增删查改操作不会生效。
 
-All entities should extends `BaseEntity`, or no any data access methods for you.
+#### 注解
 
-#### Annotations
-
-If you want to customize table name or column name, you can use `Table` and `Column` annotations
+如果想自定义数据库表名称和列名称，可以使用 `Table` 和 `Column` 注解
 
 - Table
 
-  You can define table name and table id column name by using this annotation
+  这个注解可以自定义表名称和表的主键列名称
 
 - Column
 
-  You can define column name by using this annotation
+  这个注解可以自定义列名称
 
-### Methods of data access object
+### 基本的增删查改方法
 
-|     Method     |                         Description                          |
-| :------------: | :----------------------------------------------------------: |
-|    saveOne     |                       Save one entity                        |
-|      save      |                      Save many entities                      |
-|  saveOrUpdate  | Save or update entity, if the entity has id value, then update it |
-|   deleteOne    |                     Delete by entity id                      |
-|     delete     |                     Delete by conditions                     |
-|    findOne     |                      Find entity by id                       |
-|   findFirst    |               Find first record by conditions                |
-|      find      |                      Find by conditions                      |
-|     count      |             Returns records count by conditions              |
-|    sliceup     |             Returns paged entities by conditions             |
-|     exists     |           Check exists of entity id or conditions            |
-|     update     |                     Update entity by id                      |
-| updateNullable | Update entity by id, and null value properties update to null |
+|      方法      |                        描述                        |
+| :------------: | :------------------------------------------------: |
+|    saveOne     |                  保存单个实体对象                  |
+|      save      |                  保存多个实体对象                  |
+|  saveOrUpdate  |         保存或者更新，这取决于是否给主键值         |
+|   deleteOne    |                  根据主键的值删除                  |
+|     delete     |                    根据条件删除                    |
+|    findOne     |                  根据主键的值查询                  |
+|   findFirst    |             查询符合条件的首个实体对象             |
+|      find      |                    根据条件查询                    |
+|     count      |                    根据条件计数                    |
+|    sliceup     |                      分页查询                      |
+|     exists     |          查询指定的主键值或者条件是否存在          |
+|     update     |             根据主键值更新单个实体对象             |
+| updateNullable | 根据主键值更新单个实体对象，为空的属性将更新为空值 |
 
-### Condition
+### 条件
 
-Some "dao" methods requires condition object parameter, here are some examples for you:
+有些方法需要传入条件对象，以下是些许例子帮助理解：
 
-1. Find by page
+1. 分页
 
    ```java
    // select identity, username from user limit 0, 10;
    userDao.find(new Condition<>(User.class).page(1).size(10));
    ```
 
-2. Find by page and sort
+2. 分页和排序
 
    ```java
    // select identity, username from user order by identity desc limit 0, 10;
    userDao.find(new Condition<>(User.class).page(1).size(10).desc("identity"));
    ```
 
-3. Find by conditions
+3. 条件查询
 
    ```java
    // select identity, username from user where username = 'jack';
    userDao.find(new Condition<>(User.class).where().equalTo("username","jack").end());
    ```
 
-4. Delete by conditions
+4. 按条件删除
 
    ```java
    // delete from user where username like '%ja%';
@@ -82,14 +80,14 @@ Some "dao" methods requires condition object parameter, here are some examples f
    userDao.delete(new Condition<>(User.class).where().llike("username","ja").end());
    ```
 
-5. Count by conditions
+5. 按条件计数
 
    ```java
    // select count(1) from user where username = 'jack';
    userDao.count(new Condition<>(User.class).where().equalTo("username","jack").end());
    ```
 
-6. Exists by conditions
+6. 按条件查询是否存在
 
    ```java
    // select count(1) from user where username = 'jack';
@@ -97,9 +95,9 @@ Some "dao" methods requires condition object parameter, here are some examples f
    userDao.exists(new Condition<>(User.class).where().equalTo("username","jack").end());
    ```
 
-### How to configure without spring support
+### 如何在没有 spring 的环境中进行配置
 
-1. Configuration file `mybatis-config.xml`
+1. 准备配置文件 `mybatis-config.xml`
 
    ```xml
    <?xml version="1.0" encoding="UTF-8" ?>
@@ -126,7 +124,7 @@ Some "dao" methods requires condition object parameter, here are some examples f
    </configuration>
    ```
 
-2. Configure helper by using `MybatisHelperConfigurer` before mybatis `SqlSessionFactory` build
+2. 配置 `MybatisHelperConfigurer` 在 `SqlSessionFactory` 构建之前
 
    ```java
    MybatisHelperConfigurer configurer = MybatisHelperConfigurer.create().configure();
@@ -134,22 +132,22 @@ Some "dao" methods requires condition object parameter, here are some examples f
    SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(in);
    ```
 
-3. Initialize result mappings by using mybatis `Configuration` object
+3. 初始化映射结果，需要传入 `Configuration` 对象
 
    ```java
    configurer.initializeResultMappings(sqlSessionFactory.getConfiguration());
    ```
 
-4. Now, you can use mybatis APIs
+4. 现在，你就可以像往常一样使用 mybatis 的接口了
 
    ```java
    SqlSession session = sqlSessionFactory.openSession();
    UserDao userDao = session.getMapper(UserDao.class);
    ```
 
-### How to configure with spring support
+### 如何在 spring 的支持下进行配置
 
-JUST replace `SqlSessionFactoryBean` to `MybatisHelperSqlSessionFactoryBean`, like this:
+仅仅替换 `SqlSessionFactoryBean` 为 `MybatisHelperSqlSessionFactoryBean`, 像以下：
 
 ```java
 @MapperScan("me.gaigeshen.mybatis.helper.spring.mapper")
