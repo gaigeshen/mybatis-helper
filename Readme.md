@@ -8,7 +8,7 @@
 
 ### Introduction
 
-Helper tools for mybatis, this tools **TESTed** with mybatis version 3.5.1 and mybatis-spring version 2.0.1, after extends `BaseEntity`, you don't have to write mapper file if **JUST** use basic CRUD [methods](#Methods of data access object).
+Helper tools for mybatis, this tools **TESTed** with mybatis version 3.5.1 and mybatis-spring version 2.0.1, after extends `BaseEntity`, you don't have to write mapper file if **JUST** use basic CRUD [methods](#Methods-of-data-access-object).
 
 ### About entity
 
