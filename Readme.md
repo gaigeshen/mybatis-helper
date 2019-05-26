@@ -10,7 +10,7 @@
 
 ### Introduction
 
-Helper tools for mybatis, this tools **TESTed** with mybatis version 3.5.1 and mybatis-spring version 2.0.1, after extends `BaseEntity` and `Dao` interface, you don't have to write mapper xml file if **JUST** use basic CRUD [methods](#Methods-of-data-access-object).
+Helper tools for mybatis, this tools **TESTed** with mybatis version 3.5.1 and mybatis-spring version 2.0.1, after extends `BaseEntity` and `Dao` interface, you don't have to write mapper xml file if **JUST** use basic CRUD [methods](#Basic-methods).
 
 ### About entity
 
@@ -30,7 +30,26 @@ If you want to customize table name or column name, you can use `Table` and `Col
 
   You can define column name by using this annotation
 
-### Methods of data access object
+### About mapper xml file
+
+Write your **custom methods** to mapper xml file
+
+> Note: The resultMap id is "*${entity type name}ResultMap*"
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- Basic methods please don't write to this file -->
+<mapper>
+    <!-- The resultMap id is ${entity type name}ResultMap -->
+    <select id="selectByUsername" resultMap="UserResultMap" >
+        select identity, username from user where username = #{username}
+    </select>
+</mapper>
+```
+
+### Basic methods
 
 |     Method     |                         Description                          |
 | :------------: | :----------------------------------------------------------: |

@@ -3,9 +3,12 @@ package me.gaigeshen.mybatis.helper.mapper;
 import me.gaigeshen.mybatis.helper.Dao;
 import me.gaigeshen.mybatis.helper.Entity;
 import me.gaigeshen.mybatis.helper.EntityMetadata;
+import me.gaigeshen.mybatis.helper.MybatisHelperConfigurerException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -69,10 +72,29 @@ public class MapperSource {
    * @return The mapper source object
    */
   public static MapperSource create(Class<?> mapperClass, InputStream mapperXmlResource) {
+    MapperSource mapperSource = create(mapperClass);
+    String defaultSource = mapperSource.getSource();
+    int len = 0;
+    byte[] buffer = new byte[4096];
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    try (InputStream in = mapperXmlResource) {
+      while ((len = in.read(buffer)) > 0) {
+        out.write(buffer, 0, len);
+      }
+    } catch (IOException e) {
+      throw new MybatisHelperConfigurerException("Could not read user defined mapper xml resource", e);
+    }
+    String userDefinedMapper = new String(out.toByteArray());
+    if (StringUtils.contains(userDefinedMapper, "<mapper>")
+            && StringUtils.contains(userDefinedMapper, "</mapper>")) {
+      userDefinedMapper = userDefinedMapper
+              .substring(userDefinedMapper.indexOf("<mapper>"))
+              .replaceAll("<mapper>", "");
+      return new MapperSource(mapperSource.getMapperClass(), mapperSource.getEntityClass(),
+              defaultSource.replaceAll("</mapper>", userDefinedMapper));
+    }
 
-
-
-    return null;
+    return mapperSource;
   }
 
   /**

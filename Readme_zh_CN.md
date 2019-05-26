@@ -32,6 +32,23 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
 
   这个注解可以自定义列名称
 
+### 关于映射文件
+
+将自定义的映射方法写入文件，基本的方法不要写入到这个文件
+
+> 注意， 查询结果映射编号固定格式为 "*${类型名称}ResultMap*"
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper>
+    <select id="selectByUsername" resultMap="UserResultMap" >
+        select identity, username from user where username = #{username}
+    </select>
+</mapper>
+```
+
 ### 基本的增删查改方法
 
 |      方法      |                        描述                        |

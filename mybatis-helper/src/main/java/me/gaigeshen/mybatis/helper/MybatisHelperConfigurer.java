@@ -57,12 +57,14 @@ public class MybatisHelperConfigurer {
     ClassPool classPool = ClassPool.getDefault();
     CtClass aClass = classPool.get("org.apache.ibatis.builder.annotation.MapperAnnotationBuilder");
     CtMethod method = aClass.getDeclaredMethod("loadXmlResource");
-    method.insertAt(179, "new org.apache.ibatis.builder.xml.XMLMapperBuilder(\n" +
-            "    new java.io.ByteArrayInputStream(" +
-            "me.gaigeshen.mybatis.helper.mapper.MapperSource.create(type).getSource().getBytes()),\n" +
-            "      assistant.getConfiguration(),\n" +
-            "      xmlResource,\n" +
-            "      configuration.getSqlFragments(),\n" +
+    method.insertAt(179, "java.lang.String mapperSource = inputStream != null" +
+            "? me.gaigeshen.mybatis.helper.mapper.MapperSource.create(type, inputStream).getSource()" +
+            ": me.gaigeshen.mybatis.helper.mapper.MapperSource.create(type).getSource();" +
+            "new org.apache.ibatis.builder.xml.XMLMapperBuilder(" +
+            "    new java.io.ByteArrayInputStream(mapperSource.getBytes())," +
+            "      assistant.getConfiguration()," +
+            "      xmlResource," +
+            "      configuration.getSqlFragments()," +
             "      type.getName())" +
             "   .parse();" +
             "inputStream = null;");

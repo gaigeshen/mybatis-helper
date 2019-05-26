@@ -7,4 +7,7 @@ import me.gaigeshen.mybatis.helper.entity.User;
  * @author gaigeshen
  */
 public interface UserDao extends Dao<User, Long> {
+
+  User selectByUsername(String username);
+
 }
