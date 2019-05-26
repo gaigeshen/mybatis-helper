@@ -6,6 +6,7 @@ import me.gaigeshen.mybatis.helper.EntityMetadata;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
+import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -58,6 +59,20 @@ public class MapperSource {
    */
   public String getSource() {
     return source;
+  }
+
+  /**
+   * Create mapper source with mapper class and user defined mapper xml resource
+   *
+   * @param mapperClass The mapper class
+   * @param mapperXmlResource User defined mapper xml resource
+   * @return The mapper source object
+   */
+  public static MapperSource create(Class<?> mapperClass, InputStream mapperXmlResource) {
+
+
+
+    return null;
   }
 
   /**
