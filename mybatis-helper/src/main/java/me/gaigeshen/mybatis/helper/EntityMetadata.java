@@ -107,6 +107,9 @@ public class EntityMetadata {
       field.setAccessible(true);
       Column annotation = field.getAnnotation(Column.class);
       if (annotation != null) {
+        if (annotation.exclude()) {
+          continue;
+        }
         String value = annotation.value();
         if (StringUtils.isNotBlank(value)) {
           result.put(field.getName(), value);

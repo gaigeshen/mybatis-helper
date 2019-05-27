@@ -17,4 +17,11 @@ public @interface Column {
    * @return Column name, default blank value
    */
   String value() default "";
+
+  /**
+   * Ignore property
+   *
+   * @return If true, then ignore property
+   */
+  boolean exclude() default false;
 }
