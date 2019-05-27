@@ -1,5 +1,5 @@
 <idea-plugin>
-  <id>me.gaigeshen.mybatis</id>
+  <id>me.gaigeshen.mybatis.helper</id>
   <name>Mybatis Helper</name>
   <version>1.0.0</version>
   <vendor email="gaigeshen@qq.com" url="https://github.com/gaigeshen">gaigeshen</vendor>
