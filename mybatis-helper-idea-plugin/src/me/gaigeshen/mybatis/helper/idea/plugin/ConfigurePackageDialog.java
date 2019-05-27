@@ -12,10 +12,12 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiPackage;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * Configure packages for entity class, dao class and mapper xml file directory
@@ -24,6 +26,9 @@ import java.awt.*;
  */
 public class ConfigurePackageDialog extends DialogWrapper {
 
+  private List<Column> columns;
+
+  private ComboBox<Column> identityColumnComboBox;
   private ComboBox<Project> projectComboBox;
   private ComboBox<Module> moduleComboBox;
   private JTextField entityPackageField;
@@ -34,14 +39,17 @@ public class ConfigurePackageDialog extends DialogWrapper {
   private JButton daoPackageButton;
   private JButton mapperDirectoryButton;
 
+  private Column identityColumn;
   private Project project;
   private Module module;
   private PsiPackage entityPackage;
   private PsiPackage daoPackage;
   private VirtualFile mapperDirectory;
 
-  public ConfigurePackageDialog() {
+  public ConfigurePackageDialog(List<Column> columns) {
     super(true);
+    Validate.notNull(columns, "columns");
+    this.columns = columns;
     init();
     setTitle("Configure Packages");
   }
@@ -53,6 +61,7 @@ public class ConfigurePackageDialog extends DialogWrapper {
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.fill = GridBagConstraints.HORIZONTAL;
 
+    initializeIdColumnsField(panel, gbc);
     initializeProjectsField(panel, gbc);
     initializeModulesField(panel, gbc);
     initializeEntityPackageField(panel, gbc);
@@ -60,6 +69,28 @@ public class ConfigurePackageDialog extends DialogWrapper {
     initializeMapperDirectoryField(panel, gbc);
 
     return panel;
+  }
+
+  private void initializeIdColumnsField(JComponent container, GridBagConstraints gbc) {
+    JLabel label = new JLabel("Identity Column:");
+    Column[] columns = new Column[this.columns.size()];
+    for (int i = 0; i < this.columns.size(); i++) {
+      columns[i] = this.columns.get(i);
+    }
+    identityColumnComboBox = new ComboBox<>(columns);
+    Column column = (Column) identityColumnComboBox.getSelectedItem();
+    if (column != null) {
+      this.identityColumn = column;
+    }
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    container.add(label, gbc);
+    gbc.gridx = 1;
+    gbc.gridy = 0;
+    container.add(identityColumnComboBox, gbc);
+    identityColumnComboBox.addItemListener(e -> {
+      this.identityColumn = (Column) e.getItem();
+    });
   }
 
   private void initializeProjectsField(JComponent container, GridBagConstraints gbc) {
@@ -72,10 +103,10 @@ public class ConfigurePackageDialog extends DialogWrapper {
       this.project = project;
     }
     gbc.gridx = 0;
-    gbc.gridy = 0;
+    gbc.gridy = 1;
     container.add(label, gbc);
     gbc.gridx = 1;
-    gbc.gridy = 0;
+    gbc.gridy = 1;
     container.add(projectComboBox, gbc);
     projectComboBox.addItemListener(e -> {
       this.project = (Project) e.getItem();
@@ -88,10 +119,10 @@ public class ConfigurePackageDialog extends DialogWrapper {
     JLabel label = new JLabel("Module:");
     moduleComboBox = new ComboBox<>();
     gbc.gridx = 0;
-    gbc.gridy = 1;
+    gbc.gridy = 2;
     container.add(label, gbc);
     gbc.gridx = 1;
-    gbc.gridy = 1;
+    gbc.gridy = 2;
     container.add(moduleComboBox, gbc);
     moduleComboBox.addItemListener(e -> {
       module = (Module) e.getItem();
@@ -119,7 +150,7 @@ public class ConfigurePackageDialog extends DialogWrapper {
         Messages.showWarningDialog("Please selecte module", "Warning");
         return;
       }
-      PackageChooserDialog dialog = new PackageChooserDialog("Choose entity Package", module);
+      PackageChooserDialog dialog = new PackageChooserDialog("Choose Entity Package", module);
       if (dialog.showAndGet()) {
         entityPackage = dialog.getSelectedPackage();
         if (entityPackage != null) {
@@ -129,13 +160,13 @@ public class ConfigurePackageDialog extends DialogWrapper {
       }
     });
     gbc.gridx = 0;
-    gbc.gridy = 2;
+    gbc.gridy = 3;
     container.add(label, gbc);
     gbc.gridx = 1;
-    gbc.gridy = 2;
+    gbc.gridy = 3;
     container.add(entityPackageField, gbc);
     gbc.gridx = 2;
-    gbc.gridy = 2;
+    gbc.gridy = 3;
     container.add(entityPackageButton, gbc);
   }
 
@@ -159,13 +190,13 @@ public class ConfigurePackageDialog extends DialogWrapper {
       }
     });
     gbc.gridx = 0;
-    gbc.gridy = 3;
+    gbc.gridy = 4;
     container.add(label, gbc);
     gbc.gridx = 1;
-    gbc.gridy = 3;
+    gbc.gridy = 4;
     container.add(daoPackageField, gbc);
     gbc.gridx = 2;
-    gbc.gridy = 3;
+    gbc.gridy = 4;
     container.add(daoPackageButton, gbc);
   }
 
@@ -185,14 +216,18 @@ public class ConfigurePackageDialog extends DialogWrapper {
       });
     });
     gbc.gridx = 0;
-    gbc.gridy = 4;
+    gbc.gridy = 5;
     container.add(label, gbc);
     gbc.gridx = 1;
-    gbc.gridy = 4;
+    gbc.gridy = 5;
     container.add(mapperDirectoryField, gbc);
     gbc.gridx = 2;
-    gbc.gridy = 4;
+    gbc.gridy = 5;
     container.add(mapperDirectoryButton, gbc);
+  }
+
+  public Column getIdentityColumn() {
+    return identityColumn;
   }
 
   public Project getProject() {

@@ -21,7 +21,7 @@
   <depends>com.intellij.modules.java</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <toolWindow id="Ecmybatis" anchor="right" factoryClass="me.gaigeshen.mybatis.helper.idea.plugin.Window" />
+    <toolWindow id="Mybatis Helper" anchor="right" factoryClass="me.gaigeshen.mybatis.helper.idea.plugin.Window" />
   </extensions>
 
   <actions>

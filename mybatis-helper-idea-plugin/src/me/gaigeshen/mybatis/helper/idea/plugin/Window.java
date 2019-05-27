@@ -17,6 +17,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.psi.*;
 import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
@@ -46,17 +47,14 @@ public class Window implements ToolWindowFactory {
 
   private static final String ENTITY_CONTENT = "package _package_;\n" +
           "\n" +
-          "import lombok.Getter;\n" +
-          "import lombok.Setter; \n" +
           "import _baseEntityPackage_.BaseEntity; \n" +
           "\n" +
           "/**\n" +
           " *\n" +
           " * @author mybatis helper\n" +
           " */\n" +
-          "@Getter\n" +
-          "@Setter\n" +
-          "public class _typeName_ extends BaseEntity {\n" +
+          "@Table(id = \"_IdColumnName_\")" +
+          "public class _typeName_ extends BaseEntity<_Id_> {\n" +
           "\n" +
           "  _modelFields_\n" +
           "\n" +
@@ -70,7 +68,7 @@ public class Window implements ToolWindowFactory {
           " * \n" +
           " * @author mybatis helper\n" +
           " */\n" +
-          "public interface _typeName_Dao extends Dao<_typeName_, _ID_> {\n" +
+          "public interface _typeName_Dao extends Dao<_typeName_, _Id_> {\n" +
           "  \n" +
           "  // You can type your methods here\n" +
           "  \n" +
@@ -202,30 +200,34 @@ public class Window implements ToolWindowFactory {
     @Override
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
       int selectedRow = treeTable.getSelectedRow();
-      if (selectedRow > -1) {
-        TableOrColumnNode node = (TableOrColumnNode) treeTable.getModel().getValueAt(selectedRow, 0);
-        Object data = node.getData();
-        if (data instanceof Table) {
-          List<Column> columns = new ArrayList<>();
-          Enumeration children = node.children();
-          while (children.hasMoreElements()) {
-            Column child = (Column) ((TableOrColumnNode) children.nextElement()).getData();
-            columns.add(child);
-          }
-          ConfigurePackageDialog dialog = new ConfigurePackageDialog();
-          if (dialog.showAndGet()) {
-            Module module = dialog.getModule();
-            PsiPackage entityPackage = dialog.getEntityPackage();
-            PsiPackage daoPackage = dialog.getDaoPackage();
-            VirtualFile mapperDirectory = dialog.getMapperDirectory();
-            String tableNameCamel = NameUtils.underlineToCamel(((Table) data).getName());
-            String typeName = StringUtils.upperCase(StringUtils.left(tableNameCamel, 1)) + tableNameCamel.substring(1);
-            generateFiles(module, entityPackage, daoPackage, mapperDirectory, typeName, columns);
-          }
+      if (selectedRow == -1) {
+        Messages.showWarningDialog("No selected database table", "Warning");
+        return;
+      }
+      TableOrColumnNode node = (TableOrColumnNode) treeTable.getModel().getValueAt(selectedRow, 0);
+      Object data = node.getData();
+      if (data instanceof Table) {
+        List<Column> columns = new ArrayList<>();
+        Enumeration children = node.children();
+        while (children.hasMoreElements()) {
+          Column child = (Column) ((TableOrColumnNode) children.nextElement()).getData();
+          columns.add(child);
+        }
+        if (columns.isEmpty()) {
+          Messages.showWarningDialog("No columns of table: " + data, "Warning");
           return;
         }
+        ConfigurePackageDialog dialog = new ConfigurePackageDialog(columns);
+        if (dialog.showAndGet()) {
+          Module module = dialog.getModule();
+          PsiPackage entityPackage = dialog.getEntityPackage();
+          PsiPackage daoPackage = dialog.getDaoPackage();
+          VirtualFile mapperDirectory = dialog.getMapperDirectory();
+          String tableNameCamel = NameUtils.underlineToCamel(((Table) data).getName());
+          String typeName = StringUtils.upperCase(StringUtils.left(tableNameCamel, 1)) + tableNameCamel.substring(1);
+          generateFiles(module, entityPackage, daoPackage, mapperDirectory, typeName, columns, dialog.getIdentityColumn());
+        }
       }
-      Messages.showWarningDialog("No selected database table", "Warning");
     }
   }
 
@@ -238,10 +240,14 @@ public class Window implements ToolWindowFactory {
    * @param mapperDirectory The mapper xml file directory
    * @param typeName The entity type name, simple name
    * @param columns The columns data
+   * @param identityColumn Identity column data
    */
-  private void generateFiles(Module module, PsiPackage entityPackage, PsiPackage daoPackage, VirtualFile mapperDirectory, String typeName, List<Column> columns) {
-    generateEntityClass(module, entityPackage, typeName, columns);
-    generateDaoClass(module, daoPackage, typeName);
+  private void generateFiles(Module module,
+                             PsiPackage entityPackage, PsiPackage daoPackage, VirtualFile mapperDirectory,
+                             String typeName,
+                             List<Column> columns, Column identityColumn) {
+    generateEntityClass(module, entityPackage, typeName, columns, identityColumn);
+    generateDaoClass(module, daoPackage, typeName, identityColumn);
     generateMapper(module, daoPackage, mapperDirectory, typeName);
   }
 
@@ -252,8 +258,9 @@ public class Window implements ToolWindowFactory {
    * @param entityPackage The eneity package
    * @param typeName The entity type name, simple name
    * @param columns Columns data
+   * @param identityColumn Identity column data
    */
-  private void generateEntityClass(Module module, PsiPackage entityPackage, String typeName, List<Column> columns) {
+  private void generateEntityClass(Module module, PsiPackage entityPackage, String typeName, List<Column> columns, Column identityColumn) {
     if (entityPackage == null || !entityPackage.isValid()) {
       Messages.showWarningDialog("Entity package invalid", "Warning");
       return;
@@ -262,16 +269,18 @@ public class Window implements ToolWindowFactory {
       return;
     }
     // Search baseEntity class
-    PsiFile[] psiFiles = FilenameIndex.getFilesByName(module.getProject(), "BaseEntity.java",
-            new ModulesScope(Sets.newHashSet(module), module.getProject()));
+    PsiFile[] psiFiles = FilenameIndex.getFilesByName(module.getProject(), "BaseEntity.class",
+            GlobalSearchScope.moduleWithLibrariesScope(module));
     if (psiFiles.length == 0) {
-      Messages.showWarningDialog("Could not found BaseEntity.java", "Warning");
+      Messages.showWarningDialog("Could not found BaseEntity.class", "Warning");
       return;
     }
     String baseEntityPackageName = ((PsiJavaFile) psiFiles[0]).getPackageName();
     String content = ENTITY_CONTENT
             .replaceAll("_package_", entityPackage.getQualifiedName())
             .replaceAll("_baseEntityPackage_", baseEntityPackageName)
+            .replaceAll("_Id_", identityColumn.getJavaType())
+            .replaceAll("_IdColumnName_", identityColumn.getColumnName())
             .replaceAll("_typeName_", typeName);
     // Search entity package name
     PsiDirectory entityPackageDirectory = PackageUtil.findPossiblePackageDirectoryInModule(module, entityPackage.getQualifiedName());
@@ -282,7 +291,8 @@ public class Window implements ToolWindowFactory {
     // Replace fields
     StringBuilder fields = new StringBuilder();
     columns.forEach(col -> {
-      if (!col.getColumnName().equals("id")) {
+      // The id column name is "id"
+      if (!col.getColumnName().equals(identityColumn.getColumnName())) {
         if (fields.length() != 0) { fields.append("\n  "); }
         fields.append("private ")
               .append(col.getJavaType()).append(" ")
@@ -306,8 +316,9 @@ public class Window implements ToolWindowFactory {
    * @param module The module
    * @param daoPackage The dao package
    * @param typeName The entity type name. simple name
+   * @param identityColumn Identity column data
    */
-  private void generateDaoClass(Module module, PsiPackage daoPackage, String typeName) {
+  private void generateDaoClass(Module module, PsiPackage daoPackage, String typeName, Column identityColumn) {
     if (daoPackage == null || !daoPackage.isValid()) {
       Messages.showWarningDialog("Dao package invalid", "Warning");
       return;
@@ -316,16 +327,16 @@ public class Window implements ToolWindowFactory {
       return;
     }
     // Search Dao.java interface
-    PsiFile[] psiFiles = FilenameIndex.getFilesByName(module.getProject(), "Dao.java",
-            new ModulesScope(Sets.newHashSet(module), module.getProject()));
+    PsiFile[] psiFiles = FilenameIndex.getFilesByName(module.getProject(), "Dao.class",
+            GlobalSearchScope.moduleWithLibrariesScope(module));
     if (psiFiles.length == 0) {
-      Messages.showWarningDialog("Could not found Dao.java", "Warning");
+      Messages.showWarningDialog("Could not found Dao.class", "Warning");
       return;
     }
     // Search entity class
     PsiJavaFile baseDao = (PsiJavaFile) psiFiles[0];
     psiFiles = FilenameIndex.getFilesByName(module.getProject(), typeName + ".java",
-            new ModulesScope(Sets.newHashSet(module), module.getProject()));
+            GlobalSearchScope.moduleScope(module));
     if (psiFiles.length == 0) {
       Messages.showWarningDialog("Could not found " + typeName + ".java", "Warning");
       return;
@@ -341,6 +352,7 @@ public class Window implements ToolWindowFactory {
             .replaceAll("_package_", daoPackage.getQualifiedName())
             .replaceAll("_typeName_", typeName)
             .replaceAll("_typePackage_", type.getPackageName())
+            .replaceAll("_Id_", identityColumn.getJavaType())
             .replaceAll("_daoPackage_", baseDao.getPackageName());
     // Create dao class
     PsiFile dao = PsiFileFactory.getInstance(module.getProject()).createFileFromText(typeName + "Dao.java", StdFileTypes.JAVA, content);

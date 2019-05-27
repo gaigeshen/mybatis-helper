@@ -7,6 +7,8 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/gaigeshen/mybatis-helper.svg)](https://github.com/gaigeshen/mybatis-helper/commits)
 
 > For Chinese version of this file, please click [Readme_zh_CN.md](Readme_zh_CN.md)
+>
+> We created intelliJ idea plugin to helps you generate mybatis files, please click  [Readme_idea_plugin.md](Readme_idea_plugin.md) 
 
 ### Introduction
 
@@ -181,6 +183,7 @@ public class MybatisHelperConfiguration {
     MybatisHelperSqlSessionFactoryBean factoryBean = new MybatisHelperSqlSessionFactoryBean();
     factoryBean.setDataSource(dataSource());
 
+    // Please don't add mappers by using this configuration object
     org.apache.ibatis.session.Configuration cfg = new org.apache.ibatis.session.Configuration();
     cfg.setUseGeneratedKeys(true);
     factoryBean.setConfiguration(cfg);

@@ -14,6 +14,10 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
 
 如果你仅仅是使用到那些基本的增删查改操作，那么你完全不必写那些很烦躁的映射文件了。
 
+### 开发工具插件
+
+我们另外开发了 IntelliJ idea 的插件，以便帮助生成 mybatis 的文件： [Readme_idea_plugin_zh_CN.md](Readme_idea_plugin_zh_CN.md) 
+
 ### 关于实体类
 
 #### 基本实体抽象类
@@ -174,13 +178,12 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
 @MapperScan("me.gaigeshen.mybatis.helper.spring.mapper")
 @Configuration
 public class MybatisHelperConfiguration {
-  // Replace SqlSessionFactoryBean to MybatisHelperSqlSessionFactoryBean
-  // to enable mybatis-helper-spring features
   @Bean
   public MybatisHelperSqlSessionFactoryBean mybatisHelperSqlSessionFactoryBean() throws Exception {
     MybatisHelperSqlSessionFactoryBean factoryBean = new MybatisHelperSqlSessionFactoryBean();
     factoryBean.setDataSource(dataSource());
 
+    // 千万注意不要使用此对象来手动添加映射类或者映射文件
     org.apache.ibatis.session.Configuration cfg = new org.apache.ibatis.session.Configuration();
     cfg.setUseGeneratedKeys(true);
     factoryBean.setConfiguration(cfg);
