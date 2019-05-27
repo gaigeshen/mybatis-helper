@@ -16,15 +16,15 @@ Search "*mybatis helper*" and install it, after idea restarted, the plugin tool 
 2. Load: Load all database tables
 3. Generate: Generate mybatis files dialog
 
-![toolwindow](C:\projects\mybatis-helper-parent\toolwindow.png)
+![toolwindow](toolwindow.png)
 
 ### Configure database options
 
-![configure-database-options](C:\projects\mybatis-helper-parent\configure-database-options.png)
+![configure-database-options](configure-database-options.png)
 
 ### Generate mybatis files
 
-![configure-packages](C:\projects\mybatis-helper-parent\configure-packages.png)
+![configure-packages](configure-packages.png)
 
 1. Identity Column: Which column is identity of this database table
 2. Project: Current project
