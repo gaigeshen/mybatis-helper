@@ -1,0 +1,30 @@
+<idea-plugin>
+  <id>me.gaigeshen.mybatis</id>
+  <name>Mybatis Helper</name>
+  <version>1.0.0</version>
+  <vendor email="gaigeshen@qq.com" url="https://github.com/gaigeshen">gaigeshen</vendor>
+
+  <description><![CDATA[
+    This plugin helpes you generate entity classes, dao classes and blank mapper files.<br>
+    More information please see: <a href="https://github.com/gaigeshen/mybatis-helper">Mybatis-Helper</a>
+    ]]></description>
+
+  <change-notes><![CDATA[
+    <ul>
+      <li>1.0.0 The first version commit, generate entity classes, dao classes and mapper file</li>
+    </ul>
+    ]]>
+  </change-notes>
+
+  <idea-version since-build="173.0"/>
+
+  <depends>com.intellij.modules.java</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <toolWindow id="Ecmybatis" anchor="right" factoryClass="me.gaigeshen.mybatis.helper.idea.plugin.Window" />
+  </extensions>
+
+  <actions>
+  </actions>
+
+</idea-plugin>
