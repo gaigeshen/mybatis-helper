@@ -10,6 +10,8 @@
     <modules>
         <module>mybatis-helper</module>
         <module>mybatis-helper-spring</module>
+        <module>mybatis-helper-spring-boot-autoconfigure</module>
+        <module>mybatis-helper-spring-boot-starter</module>
     </modules>
 
     <packaging>pom</packaging>

@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+me.gaigeshen.mybatis.helper.spring.boot.autoconfigure.MybatisHelperAutoConfiguration
