@@ -18,6 +18,13 @@
     <description>Helper tools for mybatis</description>
     <url>https://github.com/gaigeshen/mybatis-helper</url>
 
+    <scm>
+        <tag>master</tag>
+        <url>https://github.com/gaigeshen/mybatis-helper</url>
+        <connection>scm:git:https://github.com/gaigeshen/mybatis-helper.git</connection>
+        <developerConnection>scm:git:https://github.com/gaigeshen/mybatis-helper.git</developerConnection>
+    </scm>
+
     <developers>
         <developer>
             <name>gaigeshen</name>
