@@ -45,15 +45,18 @@ import java.util.*;
  */
 public class Window implements ToolWindowFactory {
 
+  private static final String HELPER_PACKAGE = "me.gaigeshen.mybatis.helper";
+
   private static final String ENTITY_CONTENT = "package _package_;\n" +
           "\n" +
           "import _baseEntityPackage_.BaseEntity; \n" +
+          "import _tableAnnotationPackage_.Table; \n" +
           "\n" +
           "/**\n" +
           " *\n" +
           " * @author mybatis helper\n" +
           " */\n" +
-          "@Table(id = \"_IdColumnName_\")" +
+          "@Table(id = \"_IdColumnName_\")\n" +
           "public class _typeName_ extends BaseEntity<_Id_> {\n" +
           "\n" +
           "  _modelFields_\n" +
@@ -247,8 +250,8 @@ public class Window implements ToolWindowFactory {
                              String typeName,
                              List<Column> columns, Column identityColumn) {
     generateEntityClass(module, entityPackage, typeName, columns, identityColumn);
-    generateDaoClass(module, daoPackage, typeName, identityColumn);
-    generateMapper(module, daoPackage, mapperDirectory, typeName);
+    generateDaoClass(module, daoPackage, entityPackage, typeName, identityColumn);
+    generateMapper(daoPackage, mapperDirectory, typeName);
   }
 
   /**
@@ -265,20 +268,28 @@ public class Window implements ToolWindowFactory {
       Messages.showWarningDialog("Entity package invalid", "Warning");
       return;
     }
-    if (isFileExists(module, typeName + ".java")) {
+    if (findClass(module, entityPackage, typeName) != null) {
       return;
     }
     // Search baseEntity class
     PsiFile[] psiFiles = FilenameIndex.getFilesByName(module.getProject(), "BaseEntity.class",
             GlobalSearchScope.moduleWithLibrariesScope(module));
-    if (psiFiles.length == 0) {
+    String baseEntityPackageName;
+    if (psiFiles.length == 0 || !HELPER_PACKAGE.equals(baseEntityPackageName = ((PsiJavaFile) psiFiles[0]).getPackageName())) {
       Messages.showWarningDialog("Could not found BaseEntity.class", "Warning");
       return;
     }
-    String baseEntityPackageName = ((PsiJavaFile) psiFiles[0]).getPackageName();
+    String tableAnnocationPackageName;
+    psiFiles = FilenameIndex.getFilesByName(module.getProject(), "Table.class",
+            GlobalSearchScope.moduleWithLibrariesScope(module));
+    if (psiFiles.length == 0 || !(tableAnnocationPackageName = ((PsiJavaFile) psiFiles[0]).getPackageName()).startsWith(HELPER_PACKAGE)) {
+      Messages.showWarningDialog("Could not found Table.class", "Warning");
+      return;
+    }
     String content = ENTITY_CONTENT
             .replaceAll("_package_", entityPackage.getQualifiedName())
             .replaceAll("_baseEntityPackage_", baseEntityPackageName)
+            .replaceAll("_tableAnnotationPackage_", tableAnnocationPackageName)
             .replaceAll("_Id_", identityColumn.getJavaType())
             .replaceAll("_IdColumnName_", identityColumn.getColumnName())
             .replaceAll("_typeName_", typeName);
@@ -315,45 +326,44 @@ public class Window implements ToolWindowFactory {
    *
    * @param module The module
    * @param daoPackage The dao package
+   * @param entityPackage The entity class package
    * @param typeName The entity type name. simple name
    * @param identityColumn Identity column data
    */
-  private void generateDaoClass(Module module, PsiPackage daoPackage, String typeName, Column identityColumn) {
+  private void generateDaoClass(Module module, PsiPackage daoPackage, PsiPackage entityPackage, String typeName, Column identityColumn) {
     if (daoPackage == null || !daoPackage.isValid()) {
       Messages.showWarningDialog("Dao package invalid", "Warning");
       return;
     }
-    if (isFileExists(module, typeName + "Dao.java")) {
+    if (findClass(module, daoPackage,typeName + "Dao") != null) {
       return;
     }
     // Search Dao.java interface
     PsiFile[] psiFiles = FilenameIndex.getFilesByName(module.getProject(), "Dao.class",
             GlobalSearchScope.moduleWithLibrariesScope(module));
-    if (psiFiles.length == 0) {
+    String baseDaoPackageName;
+    if (psiFiles.length == 0 || !HELPER_PACKAGE.equals(baseDaoPackageName = ((PsiJavaFile)psiFiles[0]).getPackageName())) {
       Messages.showWarningDialog("Could not found Dao.class", "Warning");
       return;
     }
-    // Search entity class
-    PsiJavaFile baseDao = (PsiJavaFile) psiFiles[0];
-    psiFiles = FilenameIndex.getFilesByName(module.getProject(), typeName + ".java",
-            GlobalSearchScope.moduleScope(module));
-    if (psiFiles.length == 0) {
+    // Search entity
+    if (findClass(module, entityPackage, typeName) == null) {
       Messages.showWarningDialog("Could not found " + typeName + ".java", "Warning");
       return;
     }
+
     // Search dao package
     PsiDirectory daoPackageDirectory = PackageUtil.findPossiblePackageDirectoryInModule(module, daoPackage.getQualifiedName());
     if (daoPackageDirectory == null) {
       Messages.showWarningDialog("The dao package is missing or invalid", "Warning");
       return;
     }
-    PsiJavaFile type = (PsiJavaFile) psiFiles[0];
     String content = DAO_CONTENT
             .replaceAll("_package_", daoPackage.getQualifiedName())
             .replaceAll("_typeName_", typeName)
-            .replaceAll("_typePackage_", type.getPackageName())
+            .replaceAll("_typePackage_", entityPackage.getQualifiedName())
             .replaceAll("_Id_", identityColumn.getJavaType())
-            .replaceAll("_daoPackage_", baseDao.getPackageName());
+            .replaceAll("_daoPackage_", baseDaoPackageName);
     // Create dao class
     PsiFile dao = PsiFileFactory.getInstance(module.getProject()).createFileFromText(typeName + "Dao.java", StdFileTypes.JAVA, content);
     WriteCommandAction.runWriteCommandAction(module.getProject(), () -> {
@@ -364,17 +374,16 @@ public class Window implements ToolWindowFactory {
   /**
    * Generate mapper xml file
    *
-   * @param module The module
    * @param daoPackage Dao package
    * @param mapperDirectory Mapper xml file directory
    * @param typeName Entity name, simple name
    */
-  private void generateMapper(Module module, PsiPackage daoPackage, VirtualFile mapperDirectory, String typeName) {
+  private void generateMapper(PsiPackage daoPackage, VirtualFile mapperDirectory, String typeName) {
     if (!mapperDirectory.exists()) {
       Messages.showWarningDialog("The mapper directory is missing or invalid", "Warning");
       return;
     }
-    if (isFileExists(module, typeName + "Dao.xml")) {
+    if (mapperDirectory.findChild(typeName + "Dao.xml") != null) {
       return;
     }
 
@@ -395,16 +404,20 @@ public class Window implements ToolWindowFactory {
   }
 
   /**
-   * 检查文件是否存在
+   * 检查类文件是否存在
    *
    * @param module 模块
-   * @param fileName 文件名称
+   * @param aPackage 包名
+   * @param className 文件名称
    * @return 返回该文件是否存在
    */
-  private boolean isFileExists(Module module, String fileName) {
-    PsiFile[] psiFiles = FilenameIndex.getFilesByName(module.getProject(), fileName,
-            new ModulesScope(Sets.newHashSet(module), module.getProject()));
-    return psiFiles.length > 0;
+  private PsiClass findClass(Module module, PsiPackage aPackage, String className) {
+    PsiClass[] classes = aPackage.getClasses(new ModulesScope(Sets.newHashSet(module), module.getProject()));
+    for (PsiClass aClass : classes) {
+      if (aClass.getName() != null && aClass.getName().equals(className)) {
+        return aClass;
+      }
+    }
+    return null;
   }
-
 }
