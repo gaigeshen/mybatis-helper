@@ -170,7 +170,7 @@ Some "dao" methods requires condition object parameter, here are some examples f
 
 ### How to configure with spring support
 
-JUST replace `SqlSessionFactoryBean` to `MybatisHelperSqlSessionFactoryBean`, like this:
+JUST replace `SqlSessionFactoryBean` to `MybatisHelperSqlSessionFactoryBean`, or add `MybatisHelperConfigurerProcessorBean` bean to your configuration.
 
 ```java
 @MapperScan("me.gaigeshen.mybatis.helper.spring.mapper")

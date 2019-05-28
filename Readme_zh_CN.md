@@ -172,7 +172,7 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
 
 ### 如何在 spring 的支持下进行配置
 
-仅仅替换 `SqlSessionFactoryBean` 为 `MybatisHelperSqlSessionFactoryBean`, 像以下：
+仅仅替换 `SqlSessionFactoryBean` 为 `MybatisHelperSqlSessionFactoryBean`, 或者添加`MybatisHelperConfigurerProcessorBean` 到你的配置中去，如果选择第二种方案，则原先的`SqlSessionFactoryBean` 不要去替换它。
 
 ```java
 @MapperScan("me.gaigeshen.mybatis.helper.spring.mapper")
