@@ -10,8 +10,6 @@
     <modules>
         <module>mybatis-helper</module>
         <module>mybatis-helper-spring</module>
-        <module>mybatis-helper-spring-boot-autoconfigure</module>
-        <module>mybatis-helper-spring-boot-starter</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -46,6 +44,7 @@
     <properties>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <mybatis.version>3.5.1</mybatis.version>
+        <mybatis.spring.version>2.0.1</mybatis.spring.version>
     </properties>
 
     <build>

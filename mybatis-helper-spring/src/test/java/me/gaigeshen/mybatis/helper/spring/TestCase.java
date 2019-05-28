@@ -19,7 +19,8 @@ public class TestCase {
 
   @Before
   public void init() {
-    context = new AnnotationConfigApplicationContext(MybatisHelperConfiguration.class);
+    // context = new AnnotationConfigApplicationContext(MybatisHelperConfiguration.class);
+    context = new AnnotationConfigApplicationContext(MybatisHelperConfigurationUsingProcessorBean.class);
   }
 
   @After
