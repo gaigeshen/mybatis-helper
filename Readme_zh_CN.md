@@ -183,7 +183,6 @@ public class MybatisHelperConfiguration {
     MybatisHelperSqlSessionFactoryBean factoryBean = new MybatisHelperSqlSessionFactoryBean();
     factoryBean.setDataSource(dataSource());
 
-    // 千万注意不要使用此对象来手动添加映射类或者映射文件
     org.apache.ibatis.session.Configuration cfg = new org.apache.ibatis.session.Configuration();
     cfg.setUseGeneratedKeys(true);
     factoryBean.setConfiguration(cfg);

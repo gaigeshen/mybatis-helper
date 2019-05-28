@@ -183,7 +183,6 @@ public class MybatisHelperConfiguration {
     MybatisHelperSqlSessionFactoryBean factoryBean = new MybatisHelperSqlSessionFactoryBean();
     factoryBean.setDataSource(dataSource());
 
-    // Please don't add mappers by using this configuration object
     org.apache.ibatis.session.Configuration cfg = new org.apache.ibatis.session.Configuration();
     cfg.setUseGeneratedKeys(true);
     factoryBean.setConfiguration(cfg);
