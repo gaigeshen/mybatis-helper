@@ -1,5 +1,6 @@
 package me.gaigeshen.mybatis.helper.spring;
 
+import me.gaigeshen.mybatis.helper.spring.mapper.UserDao;
 import org.hsqldb.jdbc.JDBCDataSource;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ public class MybatisHelperConfiguration {
 
     org.apache.ibatis.session.Configuration cfg = new org.apache.ibatis.session.Configuration();
     cfg.setUseGeneratedKeys(true);
+    cfg.addMapper(UserDao.class);
     factoryBean.setConfiguration(cfg);
 
     return factoryBean;

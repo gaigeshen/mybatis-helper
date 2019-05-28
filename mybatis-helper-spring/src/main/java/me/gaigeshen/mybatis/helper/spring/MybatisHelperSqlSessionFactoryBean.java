@@ -14,12 +14,12 @@ import org.springframework.context.ApplicationContextException;
  */
 public class MybatisHelperSqlSessionFactoryBean extends SqlSessionFactoryBean implements BeanPostProcessor {
 
-  @Override
-  public void afterPropertiesSet() throws Exception {
-    // Before sqlSessionFactory build
+  /**
+   * Create {@link MybatisHelperSqlSessionFactoryBean}
+   */
+  public MybatisHelperSqlSessionFactoryBean() {
+    // Configure when create this object
     MybatisHelperConfigurer.create().configure();
-    // Build sqlSessionFactory
-    super.afterPropertiesSet();
   }
 
   @Override
