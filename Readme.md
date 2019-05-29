@@ -46,7 +46,11 @@ Write your **custom methods** to mapper xml file
 <mapper>
     <!-- The resultMap id is ${entity type name}ResultMap -->
     <select id="selectByUsername" resultMap="UserResultMap" >
-        select identity, username from user where username = #{username}
+        <!-- Include all columns name -->
+        select <include refid="fields" />
+        <!-- Inclide table name -->
+        from <include refid="table" />
+        where username = #{username}
     </select>
 </mapper>
 ```

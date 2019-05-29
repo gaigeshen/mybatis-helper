@@ -48,7 +48,11 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper>
     <select id="selectByUsername" resultMap="UserResultMap" >
-        select identity, username from user where username = #{username}
+        <!-- 如果引用表的所有字段，则如此写 -->
+        select <include refid="fields" />
+        <!-- 如果引用表的名称，则如此写 -->
+        from <include refid="table" />
+        where username = #{username}
     </select>
 </mapper>
 ```
