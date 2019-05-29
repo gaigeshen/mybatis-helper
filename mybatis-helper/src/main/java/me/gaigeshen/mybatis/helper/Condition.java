@@ -25,6 +25,14 @@ public final class Condition<T extends Entity<?>> {
   private List<Criteria> criterions = new ArrayList<>();
   
   public Condition(Class<T> type) { this.type = type; }
+
+  public static <E extends Entity<?>> Condition<E> create(Class<E> type) {
+    return new Condition<>(type);
+  }
+
+  public static <E extends Entity<?>> Condition<E> create(Class<E> type, int page, int size) {
+    return new Condition<>(type).page(page).size(size);
+  }
   
   public Class<?> getType() { return type; }
 
