@@ -48,7 +48,7 @@ Write your **custom methods** to mapper xml file
     <select id="selectByUsername" resultMap="UserResultMap" >
         <!-- Include all columns name -->
         select <include refid="fields" />
-        <!-- Inclide table name -->
+        <!-- Include table name -->
         from <include refid="table" />
         where username = #{username}
     </select>
