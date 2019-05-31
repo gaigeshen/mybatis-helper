@@ -258,6 +258,9 @@ public class MapperSource {
           "    <if test=\"_parameter != null\">\n" +
           "      <include refid=\"criteria\" />\n" +
           "    </if>\n" +
+          "    <if test=\"orderBy != null and orderBy != ''\">\n" +
+          "      order by ${orderBy} ${sort}\n" +
+          "    </if>\n" +
           "    limit 0, 1\n" +
           "  </select>\n" +
           "  <select id=\"count\" resultType=\"long\">\n" +
