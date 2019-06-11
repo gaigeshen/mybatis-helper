@@ -1,6 +1,6 @@
 package me.gaigeshen.mybatis.helper;
 
-import org.apache.ibatis.javassist.*;
+import javassist.*;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -55,6 +55,7 @@ public class MybatisHelperConfigurer {
    */
   private void configureMapperAnnotationBuilder() throws NotFoundException, CannotCompileException {
     ClassPool classPool = ClassPool.getDefault();
+    classPool.insertClassPath(new ClassClassPath(getClass()));
     CtClass aClass = classPool.get("org.apache.ibatis.builder.annotation.MapperAnnotationBuilder");
     CtMethod method = aClass.getDeclaredMethod("loadXmlResource");
     method.insertAt(179, "java.lang.String mapperSource = inputStream != null" +

@@ -61,6 +61,9 @@ public class TestCase {
     User user = new User();
     user.setUsername("gaigeshen");
     userDao.saveOne(user);
+
+    User saved = userDao.findOne(user.getId());
+    Assert.assertEquals(user.getUsername(), saved.getUsername());
   }
 
   @Test
