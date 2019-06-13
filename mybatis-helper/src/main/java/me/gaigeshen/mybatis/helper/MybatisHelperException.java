@@ -1,6 +1,8 @@
 package me.gaigeshen.mybatis.helper;
 
 /**
+ * Top exception
+ *
  * @author gaigeshen
  */
 public class MybatisHelperException extends RuntimeException {

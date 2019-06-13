@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * This class is thread safe
  *
- * @author ecmybatis
+ * @author gaigeshen
  */
 final class ResultMappings {
 
@@ -41,6 +41,13 @@ final class ResultMappings {
     return getMapping(type, property).getColumn();
   }
 
+  /**
+   * Returns {@link ResultMapping} of property
+   *
+   * @param type The type
+   * @param property The property
+   * @return The {@link ResultMapping}
+   */
   private static ResultMapping getMapping(Class<?> type, String property) {
     List<ResultMapping> mappings = getMappings(type);
     for (ResultMapping mapping : mappings) {
@@ -50,7 +57,13 @@ final class ResultMappings {
     }
     throw new IllegalStateException("No such mapping of type " + type.getName() + " map property " + property);
   }
-  
+
+  /**
+   * Returns all {@link ResultMapping}s of type
+   *
+   * @param type The type
+   * @return {@link ResultMapping}s
+   */
   static List<ResultMapping> getMappings(Class<?> type) {
     List<ResultMapping> mappings1 = mappings.get(type);
     if (mappings1 == null)
