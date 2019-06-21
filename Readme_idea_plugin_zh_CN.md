@@ -18,15 +18,15 @@
 2. 加载所有的数据库表
 3. 生成文件的对话框
 
-![toolwindow](toolwindow.png)
+![toolwindow](docs/pictures/toolwindow.png)
 
 ### 配置数据库信息
 
-![configure-database-options](configure-database-options.png)
+![configure-database-options](docs/pictures/configure-database-options.png)
 
 ### 生成文件的对话框
 
-![configure-packages](configure-packages.png)
+![configure-packages](docs/pictures/configure-packages.png)
 
 1. Identity Column：告诉插件该数据库表的标识符列是哪个
 2. Project：选择项目
