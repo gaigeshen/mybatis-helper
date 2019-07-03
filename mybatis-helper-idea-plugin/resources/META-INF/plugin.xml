@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>me.gaigeshen.mybatis.helper</id>
   <name>Mybatis Helper</name>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
   <vendor email="gaigeshen@qq.com" url="https://github.com/gaigeshen">gaigeshen</vendor>
 
   <description><![CDATA[
@@ -11,6 +11,7 @@
 
   <change-notes><![CDATA[
     <ul>
+      <li>1.2.0 Entity, generate getters and setters</li>
       <li>1.1.0 Code improved</li>
       <li>1.0.0 The first version commit, generate entity classes, dao classes and mapper file</li>
     </ul>

@@ -56,10 +56,10 @@ public class Window implements ToolWindowFactory {
           " *\n" +
           " * @author mybatis helper\n" +
           " */\n" +
-          "@Table(id = \"_IdColumnName_\")\n" +
+          "@Table(\"_IdColumnName_\")\n" +
           "public class _typeName_ extends BaseEntity<_Id_> {\n" +
-          "\n" +
           "  _modelFields_\n" +
+          "  _modelMethods_\n" +
           "\n" +
           "}\n";
   private static final String DAO_CONTENT = "package _package_;\n" +
@@ -299,20 +299,33 @@ public class Window implements ToolWindowFactory {
       Messages.showWarningDialog("The entity package is missing or invalid", "Warning");
       return;
     }
-    // Replace fields
+    // Replace fields & methods
     StringBuilder fields = new StringBuilder();
+    StringBuilder methods = new StringBuilder();
     columns.forEach(col -> {
       // The id column name is "id"
       if (!col.getColumnName().equals(identityColumn.getColumnName())) {
-        if (fields.length() != 0) { fields.append("\n  "); }
-        fields.append("private ")
+        fields.append("\n  private ")
               .append(col.getJavaType()).append(" ")
               .append(col.getPropertyName())
               .append("; //")
               .append(col.getDescription());
+        methods.append("\n  public ")
+               .append(col.getJavaType()).append(" ")
+               .append("get").append(col.getPropertyName().substring(0, 1).toUpperCase()).append(col.getPropertyName().substring(1)).append("() {")
+               .append("\n    return ").append(col.getPropertyName()).append(";")
+               .append("\n  }");
+        methods.append("\n  public void set")
+               .append(col.getPropertyName().substring(0, 1).toUpperCase()).append(col.getPropertyName().substring(1))
+                .append("(")
+                .append(col.getJavaType()).append(" ").append(col.getPropertyName())
+                .append(") {")
+               .append("\n    this.").append(col.getPropertyName()).append(" = ").append(col.getPropertyName()).append(";")
+               .append("\n  }");
       }
     });
-    content = content.replaceAll("_modelFields_", fields.toString());
+    content = content.replaceAll("_modelFields_", fields.toString())
+      .replaceAll("_modelMethods_", methods.toString());
     // Create entity class file
     PsiFile entity = PsiFileFactory.getInstance(module.getProject()).createFileFromText(
             typeName + ".java", StdFileTypes.JAVA, content);
