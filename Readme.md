@@ -32,6 +32,12 @@ If you want to customize table name or column name, you can use `Table` and `Col
 
   You can define column name by using this annotation
 
+### About Dao interface
+
+#### Dao
+
+All `Dao` interfaces **MUST** extends this interface directly
+
 ### About mapper xml file
 
 Write your **custom methods** to mapper xml file
