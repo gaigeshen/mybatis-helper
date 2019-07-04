@@ -61,11 +61,12 @@ public final class StringNameUtils {
       char cur = chr;
       if (cur >= 65 && cur <= 90) {
         cur += 32;
-        if (index++ != 0) {
+        if (index != 0) {
           result.append("_");
         }
       }
       result.append(cur);
+      index++;
     }
     return String.valueOf(result);
   }
