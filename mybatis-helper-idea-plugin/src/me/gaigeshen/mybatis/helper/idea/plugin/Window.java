@@ -274,18 +274,34 @@ public class Window implements ToolWindowFactory {
     // Search baseEntity class
     PsiFile[] psiFiles = FilenameIndex.getFilesByName(module.getProject(), "BaseEntity.class",
             GlobalSearchScope.moduleWithLibrariesScope(module));
-    String baseEntityPackageName;
-    if (psiFiles.length == 0 || !HELPER_PACKAGE.equals(baseEntityPackageName = ((PsiJavaFile) psiFiles[0]).getPackageName())) {
-      Messages.showWarningDialog("Could not found BaseEntity.class", "Warning");
-      return;
+    String baseEntityPackageName = null;
+    if (psiFiles.length > 0) {
+      for (PsiFile psiFile : psiFiles) {
+        String packageName = ((PsiJavaFile) psiFile).getPackageName();
+        if (packageName.startsWith(HELPER_PACKAGE)) {
+          baseEntityPackageName = packageName;
+        }
+      }
     }
-    String tableAnnocationPackageName;
+    if (baseEntityPackageName == null) {
+      Messages.showWarningDialog("Could not found BaseEntity.class", "Warning");
+    }
+    // Search Table.class annotation
+    String tableAnnocationPackageName = null;
     psiFiles = FilenameIndex.getFilesByName(module.getProject(), "Table.class",
             GlobalSearchScope.moduleWithLibrariesScope(module));
-    if (psiFiles.length == 0 || !(tableAnnocationPackageName = ((PsiJavaFile) psiFiles[0]).getPackageName()).startsWith(HELPER_PACKAGE)) {
-      Messages.showWarningDialog("Could not found Table.class", "Warning");
-      return;
+    if (psiFiles.length > 0) {
+      for (PsiFile psiFile : psiFiles) {
+        String packageName = ((PsiJavaFile) psiFile).getPackageName();
+        if (packageName.startsWith(HELPER_PACKAGE)) {
+          tableAnnocationPackageName = packageName;
+        }
+      }
     }
+    if (tableAnnocationPackageName == null) {
+      Messages.showWarningDialog("Could not found Table.class", "Warning");
+    }
+
     String content = ENTITY_CONTENT
             .replaceAll("_package_", entityPackage.getQualifiedName())
             .replaceAll("_baseEntityPackage_", baseEntityPackageName)
@@ -354,10 +370,17 @@ public class Window implements ToolWindowFactory {
     // Search Dao.java interface
     PsiFile[] psiFiles = FilenameIndex.getFilesByName(module.getProject(), "Dao.class",
             GlobalSearchScope.moduleWithLibrariesScope(module));
-    String baseDaoPackageName;
-    if (psiFiles.length == 0 || !HELPER_PACKAGE.equals(baseDaoPackageName = ((PsiJavaFile)psiFiles[0]).getPackageName())) {
+    String baseDaoPackageName = null;
+    if (psiFiles.length > 0) {
+      for (PsiFile psiFile : psiFiles) {
+        String packageName = ((PsiJavaFile) psiFile).getPackageName();
+        if (packageName.startsWith(HELPER_PACKAGE)) {
+          baseDaoPackageName = packageName;
+        }
+      }
+    }
+    if (baseDaoPackageName == null) {
       Messages.showWarningDialog("Could not found Dao.class", "Warning");
-      return;
     }
     // Search entity
     if (findClass(module, entityPackage, typeName) == null) {
