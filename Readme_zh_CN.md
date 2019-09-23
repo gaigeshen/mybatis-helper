@@ -50,6 +50,7 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 请注意命名空间属性不再需要 -->
 <mapper>
     <select id="selectByUsername" resultMap="UserResultMap" >
         <!-- 如果引用表的所有字段，则如此写 -->
@@ -153,6 +154,10 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
        </environments>
        <mappers>
            <mapper class="me.gaigeshen.mybatis.helper.mapper.UserDao" />
+           <!-- <mapper resource="me/gaigeshen/mybatis/helper/mapper/UserDao.xml" /> -->
+           
+           <!-- 请注意，这种形式的映射文件指定方式暂时不支持 -->
+           <mapper url="" />
        </mappers>
    </configuration>
    ```

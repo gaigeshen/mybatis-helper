@@ -65,6 +65,23 @@ public class MapperSource {
   }
 
   /**
+   * Create mapper source with mapper class name and user defined mapper xml resource
+   *
+   * @param mapperClassName The mapper class name
+   * @param mapperXmlResource User defined mapper xml resource
+   * @return The mapper source object
+   */
+  public static MapperSource create(String mapperClassName, InputStream mapperXmlResource) {
+    Class<?> mapperClass;
+    try {
+      mapperClass = Class.forName(mapperClassName);
+    } catch (ClassNotFoundException e) {
+      throw new MybatisHelperConfigurerException("Could not found mapper interface: " + mapperClassName, e);
+    }
+    return create(mapperClass, mapperXmlResource);
+  }
+
+  /**
    * Create mapper source with mapper class and user defined mapper xml resource
    *
    * @param mapperClass The mapper class

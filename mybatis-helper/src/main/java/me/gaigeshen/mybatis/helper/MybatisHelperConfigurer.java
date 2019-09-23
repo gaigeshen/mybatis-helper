@@ -29,6 +29,7 @@ public class MybatisHelperConfigurer {
    */
   public MybatisHelperConfigurer configure() {
     try {
+      configureXmlConfigBuilder();
       configureMapperAnnotationBuilder();
     } catch (NotFoundException | CannotCompileException e) {
       throw new MybatisHelperConfigurerException("Could not configure", e);
@@ -43,6 +44,32 @@ public class MybatisHelperConfigurer {
    */
   public void initializeResultMappings(Configuration configuration) {
     ResultMappings.initialize(configuration);
+  }
+
+  /**
+   * Configure {@link org.apache.ibatis.builder.xml.XMLConfigBuilder}, insert logic code at 372 line.
+   * We changed logic of load xml mapper file, because we can generate the content of mapper by using mapper and
+   * entity class objects.
+   *
+   * @throws NotFoundException If {@link org.apache.ibatis.builder.xml.XMLConfigBuilder} class not found
+   * @throws CannotCompileException Could not compile class after we changed
+   */
+  private void configureXmlConfigBuilder() throws NotFoundException, CannotCompileException {
+    ClassPool classPool = ClassPool.getDefault();
+    classPool.insertClassPath(new ClassClassPath(getClass()));
+    CtClass aClass = classPool.get("org.apache.ibatis.builder.xml.XMLConfigBuilder");
+    CtMethod method = aClass.getDeclaredMethod("mapperElement");
+
+    // Url mapper location not supported yet
+    // method.insertAt(377, "");
+
+    method.insertAt(372, "String mapperClassName = resource.replaceAll(\"/\", \".\").replaceAll(\".xml\", \"\");" +
+            // The mapper interface name is same as the mapper resource location name
+            // Create mapper source object with mapper interface name and mapper resource
+            "java.lang.String mapperSource = me.gaigeshen.mybatis.helper.mapper.MapperSource.create(mapperClassName, inputStream).getSource();" +
+            // Change the input stream object to our input stream
+            "inputStream = new java.io.ByteArrayInputStream(mapperSource.getBytes());");
+    aClass.toClass();
   }
 
   /**

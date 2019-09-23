@@ -49,6 +49,7 @@ Write your **custom methods** to mapper xml file
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!-- Basic methods please don't write to this file -->
+<!-- Please Note the namespace attribute is not requried -->
 <mapper>
     <!-- The resultMap id is ${entity type name}ResultMap -->
     <select id="selectByUsername" resultMap="UserResultMap" >
@@ -153,6 +154,10 @@ Some "dao" methods requires condition object parameter, here are some examples f
        </environments>
        <mappers>
            <mapper class="me.gaigeshen.mybatis.helper.mapper.UserDao" />
+           <!-- <mapper resource="me/gaigeshen/mybatis/helper/mapper/UserDao.xml" /> -->
+           
+           <!-- Mapper element with url is not supported -->
+           <mapper url="" />
        </mappers>
    </configuration>
    ```

@@ -17,6 +17,7 @@
         </environment>
     </environments>
     <mappers>
-        <mapper class="me.gaigeshen.mybatis.helper.mapper.UserDao" />
+        <!--<mapper class="me.gaigeshen.mybatis.helper.mapper.UserDao" />-->
+        <mapper resource="me/gaigeshen/mybatis/helper/mapper/UserDao.xml" />
     </mappers>
 </configuration>
