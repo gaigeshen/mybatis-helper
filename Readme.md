@@ -49,7 +49,7 @@ Write your **custom methods** to mapper xml file
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <!-- Basic methods please don't write to this file -->
-<!-- Please Note the namespace attribute is not requried -->
+<!-- The namespace attribute of mapper is not required in some scenarios -->
 <mapper>
     <!-- The resultMap id is ${entity type name}ResultMap -->
     <select id="selectByUsername" resultMap="UserResultMap" >
@@ -156,7 +156,7 @@ Some "dao" methods requires condition object parameter, here are some examples f
            <mapper class="me.gaigeshen.mybatis.helper.mapper.UserDao" />
            <!-- <mapper resource="me/gaigeshen/mybatis/helper/mapper/UserDao.xml" /> -->
            
-           <!-- Mapper element with url is not supported -->
+           <!-- If use url attribute, the namespace of mapper is required -->
            <mapper url="" />
        </mappers>
    </configuration>
@@ -185,7 +185,7 @@ Some "dao" methods requires condition object parameter, here are some examples f
 
 ### How to configure with spring support
 
-JUST replace `SqlSessionFactoryBean` to `MybatisHelperSqlSessionFactoryBean`, or add `MybatisHelperConfigurerProcessorBean` bean to your configuration.
+JUST replace `SqlSessionFactoryBean` to `MybatisHelperSqlSessionFactoryBean`, or add `MybatisHelperConfigurerProcessorBean` bean to your configuration. More information please see TestCase in mybatis-helper-spring module.
 
 ```java
 @MapperScan("me.gaigeshen.mybatis.helper.spring.mapper")

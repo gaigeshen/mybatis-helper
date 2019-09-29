@@ -50,7 +50,7 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<!-- 请注意命名空间属性不再需要 -->
+<!-- 请注意命名空间属性在某些场景下不再需要，后面会提到 -->
 <mapper>
     <select id="selectByUsername" resultMap="UserResultMap" >
         <!-- 如果引用表的所有字段，则如此写 -->
@@ -156,7 +156,7 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
            <mapper class="me.gaigeshen.mybatis.helper.mapper.UserDao" />
            <!-- <mapper resource="me/gaigeshen/mybatis/helper/mapper/UserDao.xml" /> -->
            
-           <!-- 请注意，这种形式的映射文件指定方式暂时不支持 -->
+           <!-- 请注意，这种情况需要在映射文件中指定命名空间 -->
            <mapper url="" />
        </mappers>
    </configuration>
@@ -185,7 +185,7 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
 
 ### 如何在 spring 的支持下进行配置
 
-仅仅替换 `SqlSessionFactoryBean` 为 `MybatisHelperSqlSessionFactoryBean`, 或者添加`MybatisHelperConfigurerProcessorBean` 到你的配置中去，如果选择第二种方案，则原先的`SqlSessionFactoryBean` 不要去替换它。
+仅仅替换 `SqlSessionFactoryBean` 为 `MybatisHelperSqlSessionFactoryBean`, 或者添加`MybatisHelperConfigurerProcessorBean` 到你的配置中去，如果选择第二种方案，则原先的`SqlSessionFactoryBean` 不要去替换它。更多详情请查看源代码里面的测试样例。
 
 ```java
 @MapperScan("me.gaigeshen.mybatis.helper.spring.mapper")

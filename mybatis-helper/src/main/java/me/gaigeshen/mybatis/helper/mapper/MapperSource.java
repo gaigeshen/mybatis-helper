@@ -1,11 +1,10 @@
 package me.gaigeshen.mybatis.helper.mapper;
 
-import me.gaigeshen.mybatis.helper.Dao;
-import me.gaigeshen.mybatis.helper.Entity;
-import me.gaigeshen.mybatis.helper.EntityMetadata;
-import me.gaigeshen.mybatis.helper.MybatisHelperConfigurerException;
+import me.gaigeshen.mybatis.helper.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.ibatis.parsing.XNode;
+import org.apache.ibatis.parsing.XPathParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -68,7 +67,7 @@ public class MapperSource {
    * Create mapper source with mapper class name and user defined mapper xml resource
    *
    * @param mapperClassName The mapper class name
-   * @param mapperXmlResource User defined mapper xml resource
+   * @param mapperXmlResource User defined mapper xml resource, will be closed after processed
    * @return The mapper source object
    */
   public static MapperSource create(String mapperClassName, InputStream mapperXmlResource) {
@@ -84,14 +83,12 @@ public class MapperSource {
   /**
    * Create mapper source with mapper class and user defined mapper xml resource
    *
-   * @param mapperClass The mapper class
-   * @param mapperXmlResource User defined mapper xml resource
+   * @param mapperClass The mapper class, if null, we resolve class name by the mapper xml content
+   * @param mapperXmlResource User defined mapper xml resource, will be closed after processed
    * @return The mapper source object
    */
   public static MapperSource create(Class<?> mapperClass, InputStream mapperXmlResource) {
-    MapperSource mapperSource = create(mapperClass);
-    String defaultSource = mapperSource.getSource();
-    int len = 0;
+    int len;
     byte[] buffer = new byte[4096];
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try (InputStream in = mapperXmlResource) {
@@ -101,17 +98,49 @@ public class MapperSource {
     } catch (IOException e) {
       throw new MybatisHelperConfigurerException("Could not read user defined mapper xml resource", e);
     }
-    String userDefinedMapper = new String(out.toByteArray());
-    if (StringUtils.contains(userDefinedMapper, "<mapper>")
-            && StringUtils.contains(userDefinedMapper, "</mapper>")) {
-      userDefinedMapper = userDefinedMapper
-              .substring(userDefinedMapper.indexOf("<mapper>"))
-              .replaceAll("<mapper>", "");
-      return new MapperSource(mapperSource.getMapperClass(), mapperSource.getEntityClass(),
-              defaultSource.replaceAll("</mapper>", userDefinedMapper));
+    String userDefinedSource = new String(out.toByteArray());
+    if (mapperClass == null) {
+      XPathParser parser = new XPathParser(userDefinedSource, true);
+      XNode mapperNode = parser.evalNode("/mapper");
+      if (mapperNode == null) {
+        throw new MybatisHelperConfigurerException("No mapper element found in user defined mapper xml resource");
+      }
+      String mapperClassName = mapperNode.getStringAttribute("namespace");
+      if (StringUtils.isBlank(mapperClassName)) {
+        throw new MybatisHelperConfigurerException("Please configure mapper namespace");
+      }
+      try {
+        mapperClass = Class.forName(mapperClassName);
+      } catch (ClassNotFoundException e) {
+        throw new MybatisHelperConfigurerException("Could not resolve mapper class name by mapper xml file", e);
+      }
+    }
+    return mergeMapperSource(create(mapperClass), userDefinedSource);
+  }
+
+  /**
+   * Merge default mapper source and user defined mapper source
+   *
+   * @param defaultMapperSource The default mapper source object
+   * @param userDefinedSource The user defined mapper source content
+   * @return The mapper source result
+   */
+  private static MapperSource mergeMapperSource(MapperSource defaultMapperSource, String userDefinedSource) {
+    String defaultMapperSourceContent = defaultMapperSource.getSource();
+    // Replace </mapper> element to blank value
+    defaultMapperSourceContent = defaultMapperSourceContent.replaceAll("</mapper>", "");
+
+    String[] userDefinedNamespaces = StringUtils.substringsBetween(userDefinedSource, "namespace=\"", "\"");
+    if (userDefinedNamespaces != null && userDefinedNamespaces.length > 0) {
+      userDefinedSource = StringUtils.substringAfter(userDefinedSource,
+              "namespace=\"" + userDefinedNamespaces[0] + "\"").replaceFirst(">", "");
+    } else {
+      userDefinedSource = StringUtils.substringAfter(userDefinedSource, "<mapper>");
     }
 
-    return mapperSource;
+    // Append user defined source content to default mapper source content
+    return new MapperSource(defaultMapperSource.getMapperClass(), defaultMapperSource.getEntityClass(),
+            defaultMapperSourceContent + userDefinedSource);
   }
 
   /**

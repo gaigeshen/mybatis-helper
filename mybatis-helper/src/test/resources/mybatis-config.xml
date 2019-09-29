@@ -17,7 +17,10 @@
         </environment>
     </environments>
     <mappers>
-        <!--<mapper class="me.gaigeshen.mybatis.helper.mapper.UserDao" />-->
-        <mapper resource="me/gaigeshen/mybatis/helper/mapper/UserDao.xml" />
+        <mapper class="me.gaigeshen.mybatis.helper.mapper.UserDao" />
+        <!--<mapper resource="me/gaigeshen/mybatis/helper/mapper/UserDao.xml" />-->
+
+        <!-- The namespace attribute value is required in the mapper file -->
+        <!--<mapper url="file:///C:\projects\mybatis-helper-parent\mybatis-helper\src\test\resources\me\gaigeshen\mybatis\helper\mapper\UserDao.xml" />-->
     </mappers>
 </configuration>

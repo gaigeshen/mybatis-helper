@@ -47,7 +47,7 @@ public class MybatisHelperConfigurer {
   }
 
   /**
-   * Configure {@link org.apache.ibatis.builder.xml.XMLConfigBuilder}, insert logic code at 372 line.
+   * Configure {@link org.apache.ibatis.builder.xml.XMLConfigBuilder}, insert logic code at 372 and 377 lines.
    * We changed logic of load xml mapper file, because we can generate the content of mapper by using mapper and
    * entity class objects.
    *
@@ -60,9 +60,15 @@ public class MybatisHelperConfigurer {
     CtClass aClass = classPool.get("org.apache.ibatis.builder.xml.XMLConfigBuilder");
     CtMethod method = aClass.getDeclaredMethod("mapperElement");
 
-    // Url mapper location not supported yet
-    // method.insertAt(377, "");
+    // Url mapper location
+    // The namespace in user defined mapper xml file is required
+    method.insertAt(377, "java.lang.String mapperSource = " +
+            // Resolve mapper class name by namespace in mapper xml content
+            "me.gaigeshen.mybatis.helper.mapper.MapperSource.create((java.lang.Class) null, inputStream).getSource();" +
+            // Change the input stream object to our input stream
+            "inputStream = new java.io.ByteArrayInputStream(mapperSource.getBytes());");
 
+    // Resource location
     method.insertAt(372, "String mapperClassName = resource.replaceAll(\"/\", \".\").replaceAll(\".xml\", \"\");" +
             // The mapper interface name is same as the mapper resource location name
             // Create mapper source object with mapper interface name and mapper resource
