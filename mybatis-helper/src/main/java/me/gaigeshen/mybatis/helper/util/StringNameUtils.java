@@ -20,9 +20,13 @@ public final class StringNameUtils {
   public static String underlineToCamel(String param) {
     if (!StringUtils.contains(param, 95)) return param;
 
-    param = param.replaceAll("(_){2,}", "_").replaceAll("^(_){1,}|(_){1,}$", "");
+    param = param.replaceAll("(_){2,}", "_")
+            .replaceAll("^(_){1,}|(_){1,}$", "");
     
     param = param.trim();
+    if (StringUtils.isBlank(param)) {
+      return "";
+    }
     char[] chrs = param.toCharArray();
     
     boolean flg = false;
