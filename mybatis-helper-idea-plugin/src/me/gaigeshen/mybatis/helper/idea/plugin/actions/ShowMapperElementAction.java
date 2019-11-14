@@ -83,6 +83,7 @@ public class ShowMapperElementAction extends AnAction {
                     .moveToOffset(StringUtils.indexOf(mapperFileText, daoSelectedText));
           }
         }
+        break;
       }
     }
   }
