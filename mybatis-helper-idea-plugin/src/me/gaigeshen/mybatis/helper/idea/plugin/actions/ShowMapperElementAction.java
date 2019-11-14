@@ -67,11 +67,22 @@ public class ShowMapperElementAction extends AnAction {
       daoPackageName = "";
     }
 
-    PsiFile[] mapperFiles = FilenameIndex.getFilesByName(project, daoClassName + ".xml", GlobalSearchScope.moduleScope(module));
+    PsiFile[] mapperFiles = FilenameIndex.getFilesByName(project, daoClassName + ".xml",
+            GlobalSearchScope.moduleScope(module));
     for (PsiFile mapperFile : mapperFiles) {
       VirtualFile mapperVirtualFile = mapperFile.getVirtualFile();
       if (StringUtils.endsWith(mapperVirtualFile.getParent().getPath().replaceAll("/", "."), daoPackageName)) {
-        FileEditorManager.getInstance(project).openFile(mapperVirtualFile, true);
+        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
+        fileEditorManager.openFile(mapperVirtualFile, true);
+        Editor mapperFileEditor = fileEditorManager.getSelectedTextEditor();
+        if (mapperFileEditor != null) {
+          String mapperFileText = mapperFile.getText();
+          String daoSelectedText = editor.getSelectionModel().getSelectedText();
+          if (StringUtils.isNotBlank(mapperFileText) && StringUtils.isNotBlank(daoSelectedText)) {
+            mapperFileEditor.getCaretModel()
+                    .moveToOffset(StringUtils.indexOf(mapperFileText, daoSelectedText));
+          }
+        }
       }
     }
   }
