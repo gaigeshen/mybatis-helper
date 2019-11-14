@@ -4,6 +4,8 @@
 
 This plugin helps you to generate mybatis files, include entity classes, dao classes and mapper xml file.
 
+After installed, you can press **ALT + Double Click** quickly go to mapper xml file from dao interface file.
+
 > Please add mybatis-helper.jar package to your module before using this plugin
 
 ### Install plugin
