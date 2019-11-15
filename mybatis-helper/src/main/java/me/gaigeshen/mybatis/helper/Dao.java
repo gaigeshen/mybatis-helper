@@ -102,6 +102,16 @@ public interface Dao<T extends Entity<ID>, ID extends Serializable> {
   }
 
   /**
+   * Returns paged entities by conditions
+   *
+   * @param condition The conditions
+   * @return Paged entities
+   */
+  default PageData<T> paging(Condition<T> condition) {
+    return sliceup(condition);
+  }
+
+  /**
    * Check exists of entity id
    *
    * @param id The entity id
