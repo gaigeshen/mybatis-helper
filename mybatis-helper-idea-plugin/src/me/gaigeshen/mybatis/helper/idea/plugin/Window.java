@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.*;
@@ -202,36 +202,91 @@ public class Window implements ToolWindowFactory {
     }
     @Override
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-      int selectedRow = treeTable.getSelectedRow();
-      if (selectedRow == -1) {
+      int[] selectedRows = treeTable.getSelectedRows();
+      if (selectedRows.length == 0) {
         Messages.showWarningDialog("No selected database table", "Warning");
         return;
       }
-      TableOrColumnNode node = (TableOrColumnNode) treeTable.getModel().getValueAt(selectedRow, 0);
-      Object data = node.getData();
-      if (data instanceof Table) {
-        List<Column> columns = new ArrayList<>();
-        Enumeration children = node.children();
-        while (children.hasMoreElements()) {
-          Column child = (Column) ((TableOrColumnNode) children.nextElement()).getData();
-          columns.add(child);
-        }
-        if (columns.isEmpty()) {
-          Messages.showWarningDialog("No columns of table: " + data, "Warning");
-          return;
-        }
-        ConfigurePackageDialog dialog = new ConfigurePackageDialog(columns);
+      if (selectedRows.length > 1) {
+        ConfigurePackageDialog dialog = ConfigurePackageDialog.createForMultiTable();
         if (dialog.showAndGet()) {
           Module module = dialog.getModule();
           PsiPackage entityPackage = dialog.getEntityPackage();
           PsiPackage daoPackage = dialog.getDaoPackage();
           VirtualFile mapperDirectory = dialog.getMapperDirectory();
-          String tableNameCamel = NameUtils.underlineToCamel(((Table) data).getName());
-          String typeName = StringUtils.upperCase(StringUtils.left(tableNameCamel, 1)) + tableNameCamel.substring(1);
-          generateFiles(module, entityPackage, daoPackage, mapperDirectory, typeName, columns, dialog.getIdentityColumn());
+          if (module == null || entityPackage == null  || daoPackage == null || mapperDirectory == null) {
+            Messages.showWarningDialog("Please check your input", "Warning");
+            return;
+          }
+          for (int selectedRow : selectedRows) {
+            TableOrColumnNode node = (TableOrColumnNode) treeTable.getModel().getValueAt(selectedRow, 0);
+            if (node.getData() instanceof Table) {
+              Table table = (Table) node.getData();
+              List<Column> columns = columnsFromTable(node);
+              if (columns.isEmpty()) {
+                Messages.showWarningDialog("No columns of: " + node.getData(), "Warning");
+                continue;
+              }
+              generateFiles(module, entityPackage, daoPackage, mapperDirectory, calcTypeName(table), columns, columns.get(0));
+            }
+          }
+        }
+      } else {
+        TableOrColumnNode node = (TableOrColumnNode) treeTable.getModel().getValueAt(selectedRows[0], 0);
+        if (node.getData() instanceof Table) {
+          Table table = (Table) node.getData();
+          List<Column> columns = columnsFromTable(node);
+          if (columns.isEmpty()) {
+            Messages.showWarningDialog("No columns of: " + node.getData(), "Warning");
+            return;
+          }
+          ConfigurePackageDialog dialog = ConfigurePackageDialog.createForSingleTable(columns);
+          if (dialog.showAndGet()) {
+            Module module = dialog.getModule();
+            PsiPackage entityPackage = dialog.getEntityPackage();
+            PsiPackage daoPackage = dialog.getDaoPackage();
+            VirtualFile mapperDirectory = dialog.getMapperDirectory();
+            Column identityColumn = dialog.getIdentityColumn();
+            if (module == null || entityPackage == null  || daoPackage == null || mapperDirectory == null || identityColumn == null) {
+              Messages.showWarningDialog("Please check your input", "Warning");
+              return;
+            }
+            generateFiles(module, entityPackage, daoPackage, mapperDirectory, calcTypeName(table), columns, identityColumn);
+          }
         }
       }
     }
+
+    /**
+     * Returns columns of Table node
+     *
+     * @param node The node, if the node type is column, returns empty list
+     * @return The columns
+     */
+    private List<Column> columnsFromTable(TableOrColumnNode node) {
+      if (!(node.getData() instanceof Table)) {
+        return Collections.emptyList();
+      }
+      List<Column> columns = new ArrayList<>();
+      Enumeration children = node.children();
+      while (children.hasMoreElements()) {
+        Column child = (Column) ((TableOrColumnNode) children.nextElement()).getData();
+        columns.add(child);
+      }
+      return columns;
+    }
+
+    /**
+     * Returns type name of Table
+     *
+     * @param table The table
+     * @return The type name
+     */
+    private String calcTypeName(Table table) {
+      String tableNameCamel = NameUtils.underlineToCamel(table.getName());
+      return StringUtils.upperCase(StringUtils.left(tableNameCamel, 1)) + tableNameCamel.substring(1);
+    }
+
   }
 
   /**
@@ -285,6 +340,7 @@ public class Window implements ToolWindowFactory {
     }
     if (baseEntityPackageName == null) {
       Messages.showWarningDialog("Could not found BaseEntity.class", "Warning");
+      return;
     }
     // Search Table.class annotation
     String tableAnnocationPackageName = null;
@@ -300,6 +356,7 @@ public class Window implements ToolWindowFactory {
     }
     if (tableAnnocationPackageName == null) {
       Messages.showWarningDialog("Could not found Table.class", "Warning");
+      return;
     }
 
     String content = ENTITY_CONTENT
@@ -381,6 +438,7 @@ public class Window implements ToolWindowFactory {
     }
     if (baseDaoPackageName == null) {
       Messages.showWarningDialog("Could not found Dao.class", "Warning");
+      return;
     }
     // Search entity
     if (findClass(module, entityPackage, typeName) == null) {
@@ -431,7 +489,7 @@ public class Window implements ToolWindowFactory {
       boolean success = true;
       try {
         VirtualFile file = mapperDirectory.createChildData(daoXmlFile, typeName + "Dao.xml");
-        file.setBinaryContent(MAPPER_CONTENT.getBytes(Charset.forName("utf-8")));
+        file.setBinaryContent(MAPPER_CONTENT.getBytes(StandardCharsets.UTF_8));
       } catch (IOException e) {
         success = false;
       }

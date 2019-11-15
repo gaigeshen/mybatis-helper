@@ -46,12 +46,20 @@ public class ConfigurePackageDialog extends DialogWrapper {
   private PsiPackage daoPackage;
   private VirtualFile mapperDirectory;
 
-  public ConfigurePackageDialog(List<Column> columns) {
+  private ConfigurePackageDialog(List<Column> columns) {
     super(true);
-    Validate.notNull(columns, "columns");
     this.columns = columns;
     init();
     setTitle("Configure Packages");
+  }
+
+  public static ConfigurePackageDialog createForSingleTable(List<Column> columns) {
+    Validate.notNull(columns, "columns");
+    return new ConfigurePackageDialog(columns);
+  }
+
+  public static ConfigurePackageDialog createForMultiTable() {
+    return new ConfigurePackageDialog(null);
   }
 
   @Nullable
@@ -73,6 +81,16 @@ public class ConfigurePackageDialog extends DialogWrapper {
 
   private void initializeIdColumnsField(JComponent container, GridBagConstraints gbc) {
     JLabel label = new JLabel("Identity Column:");
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    container.add(label, gbc);
+    gbc.gridx = 1;
+    gbc.gridy = 0;
+    if (columns == null) {
+      // No columns, multi tables
+      container.add(new ComboBox<>(new String[] { "SELECT FIRST COLUMN OF TABLE" }), gbc);
+      return;
+    }
     Column[] columns = new Column[this.columns.size()];
     for (int i = 0; i < this.columns.size(); i++) {
       columns[i] = this.columns.get(i);
@@ -82,11 +100,6 @@ public class ConfigurePackageDialog extends DialogWrapper {
     if (column != null) {
       this.identityColumn = column;
     }
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    container.add(label, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = 0;
     container.add(identityColumnComboBox, gbc);
     identityColumnComboBox.addItemListener(e -> {
       this.identityColumn = (Column) e.getItem();
@@ -226,12 +239,13 @@ public class ConfigurePackageDialog extends DialogWrapper {
     container.add(mapperDirectoryButton, gbc);
   }
 
+  /**
+   * Returns the identity column for current table
+   *
+   * @return If multi tables, then returns null
+   */
   public Column getIdentityColumn() {
     return identityColumn;
-  }
-
-  public Project getProject() {
-    return project;
   }
 
   public Module getModule() {
