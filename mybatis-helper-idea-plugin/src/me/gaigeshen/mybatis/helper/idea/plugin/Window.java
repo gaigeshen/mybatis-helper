@@ -9,6 +9,8 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.impl.scopes.ModulesScope;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.util.ProgressWindow;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
@@ -218,18 +220,23 @@ public class Window implements ToolWindowFactory {
             Messages.showWarningDialog("Please check your input", "Warning");
             return;
           }
-          for (int selectedRow : selectedRows) {
-            TableOrColumnNode node = (TableOrColumnNode) treeTable.getModel().getValueAt(selectedRow, 0);
-            if (node.getData() instanceof Table) {
-              Table table = (Table) node.getData();
-              List<Column> columns = columnsFromTable(node);
-              if (columns.isEmpty()) {
-                Messages.showWarningDialog("No columns of: " + node.getData(), "Warning");
-                continue;
+          ProgressWindow progressWindow = new ProgressWindow(false, false, module.getProject());
+          progressWindow.setTitle("Generate mybatis files");
+          progressWindow.setText("Please wait...");
+          progressWindow.startBlocking(() -> {
+            for (int selectedRow : selectedRows) {
+              TableOrColumnNode node = (TableOrColumnNode) treeTable.getModel().getValueAt(selectedRow, 0);
+              if (node.getData() instanceof Table) {
+                Table table = (Table) node.getData();
+                List<Column> columns = columnsFromTable(node);
+                if (columns.isEmpty()) {
+                  Messages.showWarningDialog("No columns of: " + node.getData(), "Warning");
+                  continue;
+                }
+                generateFiles(module, entityPackage, daoPackage, mapperDirectory, calcTypeName(table), columns, columns.get(0));
               }
-              generateFiles(module, entityPackage, daoPackage, mapperDirectory, calcTypeName(table), columns, columns.get(0));
             }
-          }
+          });
         }
       } else {
         TableOrColumnNode node = (TableOrColumnNode) treeTable.getModel().getValueAt(selectedRows[0], 0);
@@ -251,7 +258,12 @@ public class Window implements ToolWindowFactory {
               Messages.showWarningDialog("Please check your input", "Warning");
               return;
             }
-            generateFiles(module, entityPackage, daoPackage, mapperDirectory, calcTypeName(table), columns, identityColumn);
+            ProgressWindow progressWindow = new ProgressWindow(false, false, module.getProject());
+            progressWindow.setTitle("Generate mybatis files");
+            progressWindow.setText("Please wait...");
+            progressWindow.startBlocking(() -> {
+              generateFiles(module, entityPackage, daoPackage, mapperDirectory, calcTypeName(table), columns, identityColumn);
+            });
           }
         }
       }
