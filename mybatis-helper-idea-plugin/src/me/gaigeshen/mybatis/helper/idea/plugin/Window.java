@@ -56,7 +56,7 @@ public class Window implements ToolWindowFactory {
           " *\n" +
           " * @author mybatis helper\n" +
           " */\n" +
-          "@Table(\"_IdColumnName_\")\n" +
+          "@Table(id = \"_IdColumnName_\")\n" +
           "public class _typeName_ extends BaseEntity<_Id_> {\n" +
           "  _modelFields_\n" +
           "  _modelMethods_\n" +
