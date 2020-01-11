@@ -1,5 +1,6 @@
 package me.gaigeshen.mybatis.helper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,13 +27,23 @@ public final class PageData<T> {
   /**
    * Create page data
    *
-   * @param content Data content
-   * @param page Page index
-   * @param size Page size
-   * @param total Total count
+   * @param content Data content, if null then create empty list internal
+   * @param page Page index must be great than or equal 1
+   * @param size Page size must be great than or equal 1
+   * @param total Total count must be great than or equal 0
    */
   public PageData(List<T> content, int page, int size, long total) {
-    this.content = content;
+    if (page < 1) {
+      throw new IllegalArgumentException("The page must be great than or equal 1");
+    }
+    if (size < 1) {
+      throw new IllegalArgumentException("The size must be great than or equal 1");
+    }
+    if (total < 0) {
+      throw new IllegalArgumentException("The total must be great than or equal 0");
+    }
+
+    this.content = content != null ? content : Collections.emptyList();
     this.page = page;
     this.size = size;
     this.total = total;
@@ -55,15 +66,12 @@ public final class PageData<T> {
    * @return New page data translated
    */
   public <S> PageData<S> map(Function<T, S> fun) {
-    
-    List<S> otherContent = null;
-    
-    if (content != null) {
-      otherContent = content.stream()
-        .map(fun)
-        .collect(Collectors.toList());
+    if (fun == null) {
+      throw new IllegalArgumentException("Function cannot be null");
     }
-    
+    List<S> otherContent = content.stream()
+      .map(fun)
+      .collect(Collectors.toList());
     return new PageData<>(otherContent, page, size, total);
   }
 
