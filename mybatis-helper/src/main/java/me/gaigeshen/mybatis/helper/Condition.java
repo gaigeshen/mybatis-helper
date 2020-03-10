@@ -23,8 +23,18 @@ public final class Condition<T extends Entity<?>> {
   private Sort sort;
   
   private List<Criteria> criterions = new ArrayList<>();
-  
-  public Condition(Class<T> type) { this.type = type; }
+
+  /**
+   * Create condition object with entity type
+   *
+   * @param type The entity type, must not be null
+   */
+  public Condition(Class<T> type) {
+    if (type == null) {
+      throw new IllegalArgumentException("type is required");
+    }
+    this.type = type;
+  }
 
   public static <E extends Entity<?>> Condition<E> create(Class<E> type) {
     return new Condition<>(type);

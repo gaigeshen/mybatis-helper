@@ -7,7 +7,7 @@ import org.apache.ibatis.session.Configuration;
 import java.util.*;
 
 /**
- * This class is thread safe
+ * Initialize all ResultMappings from mybatis configuration, so we can use it later by static methods
  *
  * @author gaigeshen
  */

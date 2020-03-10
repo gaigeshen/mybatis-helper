@@ -31,6 +31,9 @@ public class MapperSource {
    * @param source The source value
    */
   private MapperSource(Class<?> mapperClass, Class<?> entityClass, String source) {
+    Validate.notNull(mapperClass, "mapperClass");
+    Validate.notNull(entityClass, "entityClass");
+    Validate.notBlank(source, "source");
     this.mapperClass = mapperClass;
     this.entityClass = entityClass;
     this.source = source;
@@ -208,7 +211,7 @@ public class MapperSource {
    */
   private static final String MAPPER_SOURCE_TEMPLATE = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
           "<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\"\n" +
-          "\t\"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n" +
+          "\"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >\n" +
           "<mapper namespace=\"_namespace_\">\n" +
           "  <sql id=\"table\">_table_</sql>\n" +
           "  <sql id=\"fields\">_fields_</sql>\n" +
@@ -221,23 +224,23 @@ public class MapperSource {
           "        <if test=\"criteria.valid\">\n" +
           "          <trim prefix=\"(\" suffix=\")\" prefixOverrides=\"and\">\n" +
           "            <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" +
-          "\t\t\t  <choose>\n" +
-          "\t\t\t    <when test=\"criterion.noValue\">\n" +
-          "\t\t\t      and ${criterion.condition}\n" +
-          "\t\t\t    </when>\n" +
-          "\t\t\t    <when test=\"criterion.listValue\">\n" +
-          "\t\t\t      and ${criterion.condition}\n" +
-          "\t\t\t      <foreach collection=\"criterion.value\" item=\"listItem\" open=\"(\" close=\")\" separator=\",\">\n" +
-          "\t\t\t        #{listItem}\n" +
-          "\t\t\t      </foreach>\n" +
-          "\t\t\t    </when>\n" +
-          "\t\t\t    <when test=\"criterion.betweenValue\">\n" +
-          "\t\t\t      and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n" +
-          "\t\t\t    </when>\n" +
-          "\t\t\t    <otherwise>\n" +
-          "\t\t\t      and ${criterion.condition} #{criterion.value}\n" +
-          "\t\t\t    </otherwise>\n" +
-          "\t\t\t  </choose>              \n" +
+          "            <choose>\n" +
+          "              <when test=\"criterion.noValue\">\n" +
+          "                and ${criterion.condition}\n" +
+          "              </when>\n" +
+          "              <when test=\"criterion.listValue\">\n" +
+          "                and ${criterion.condition}\n" +
+          "                <foreach collection=\"criterion.value\" item=\"listItem\" open=\"(\" close=\")\" separator=\",\">\n" +
+          "                  #{listItem}\n" +
+          "                </foreach>\n" +
+          "              </when>\n" +
+          "              <when test=\"criterion.betweenValue\">\n" +
+          "                and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n" +
+          "              </when>\n" +
+          "              <otherwise>\n" +
+          "                and ${criterion.condition} #{criterion.value}\n" +
+          "              </otherwise>\n" +
+          "             </choose>\n" +
           "            </foreach>\n" +
           "          </trim>\n" +
           "        </if>\n" +
@@ -266,10 +269,10 @@ public class MapperSource {
           "    </trim>\n" +
           "    <foreach collection=\"list\" item=\"model\" separator=\",\">\n" +
           "      <trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n" +
-          "\t    <foreach collection=\"model.values\" item=\"value\">\n" +
-          "\t      #{value.value},\n" +
-          "\t    </foreach>\n" +
-          "\t  </trim>\n" +
+          "      <foreach collection=\"model.values\" item=\"value\">\n" +
+          "        #{value.value},\n" +
+          "      </foreach>\n" +
+          "    </trim>\n" +
           "    </foreach>\n" +
           "  </insert>\n" +
           "  <delete id=\"deleteOne\">\n" +
@@ -325,21 +328,21 @@ public class MapperSource {
           "  </select>\n" +
           "  <update id=\"update\">\n" +
           "    update<include refid=\"table\" />\n" +
-          "\t<set>\n" +
-          "\t  <foreach collection=\"values\" item=\"value\">\n" +
-          "\t    <if test=\"value.value != null\">\n" +
-          "\t      ${value.mapping.column} = #{value.value},\n" +
-          "\t    </if>\n" +
-          "\t  </foreach>\n" +
-          "\t</set>where _idColumn_ = #{id}\n" +
+          "  <set>\n" +
+          "    <foreach collection=\"values\" item=\"value\">\n" +
+          "      <if test=\"value.value != null\">\n" +
+          "        ${value.mapping.column} = #{value.value},\n" +
+          "      </if>\n" +
+          "    </foreach>\n" +
+          "  </set>where _idColumn_ = #{id}\n" +
           "  </update>\n" +
           "  <update id=\"updateNullable\">\n" +
           "    update<include refid=\"table\" />\n" +
-          "\t<set>\n" +
-          "\t  <foreach collection=\"values\" item=\"value\">\n" +
-          "\t    ${value.mapping.column} = #{value.value},\n" +
-          "\t  </foreach>\n" +
-          "\t</set>where _idColumn_ = #{id}\n" +
+          "  <set>\n" +
+          "    <foreach collection=\"values\" item=\"value\">\n" +
+          "      ${value.mapping.column} = #{value.value},\n" +
+          "    </foreach>\n" +
+          "  </set>where _idColumn_ = #{id}\n" +
           "  </update>\n" +
           "</mapper>";
 }

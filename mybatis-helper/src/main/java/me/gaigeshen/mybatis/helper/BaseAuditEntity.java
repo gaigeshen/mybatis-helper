@@ -8,8 +8,7 @@ import java.util.Date;
  *
  * @author gaigeshen
  */
-public abstract class BaseAuditEntity<ID extends Serializable>
-        extends BaseEntity<ID> {
+public abstract class BaseAuditEntity<ID extends Serializable> extends BaseEntity<ID> {
   private Date createTime;
   private Date updateTime;
 
