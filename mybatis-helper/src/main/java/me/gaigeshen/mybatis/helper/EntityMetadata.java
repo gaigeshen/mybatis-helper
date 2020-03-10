@@ -2,7 +2,6 @@ package me.gaigeshen.mybatis.helper;
 
 import me.gaigeshen.mybatis.helper.annotations.Column;
 import me.gaigeshen.mybatis.helper.annotations.Table;
-import me.gaigeshen.mybatis.helper.util.StringNameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -79,7 +78,7 @@ public class EntityMetadata {
         return value;
       }
     }
-    return StringNameUtils.camelToUnderline(entityClass.getSimpleName());
+    return camelToUnderline(entityClass.getSimpleName());
   }
 
   /**
@@ -116,9 +115,33 @@ public class EntityMetadata {
           continue;
         }
       }
-      result.put(field.getName(), StringNameUtils.camelToUnderline(field.getName()));
+      result.put(field.getName(), camelToUnderline(field.getName()));
     }
     return result;
+  }
+
+  /**
+   * Translate camel string value to underline string value
+   *
+   * @param value Camel string value
+   * @return Underline string value
+   */
+  private static String camelToUnderline(String value) {
+    StringBuilder result = new StringBuilder();
+    char[] arr = value.toCharArray();
+    int index = 0;
+    for (char chr : arr) {
+      char cur = chr;
+      if (cur >= 65 && cur <= 90) {
+        cur += 32;
+        if (index != 0) {
+          result.append("_");
+        }
+      }
+      result.append(cur);
+      index++;
+    }
+    return String.valueOf(result);
   }
 
   public Class<? extends Entity<?>> getEntityClass() {
