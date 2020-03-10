@@ -76,7 +76,7 @@ public abstract class BaseEntity<ID extends Serializable> implements Entity<ID> 
       return false;
     if (obj == null || this.getClass() != obj.getClass())
       return false;
-    BaseEntity that = (BaseEntity) obj;
+    BaseEntity<?> that = (BaseEntity<?>) obj;
     return this.id.equals(that.id);
   }
 

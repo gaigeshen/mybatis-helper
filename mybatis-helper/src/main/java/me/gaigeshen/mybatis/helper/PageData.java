@@ -31,6 +31,20 @@ public final class PageData<T> {
    * @param page Page index must be great than or equal 1
    * @param size Page size must be great than or equal 1
    * @param total Total count must be great than or equal 0
+   * @param <E> The element class type of the content
+   * @return The page data
+   */
+  public static <E> PageData<E> create(List<E> content, int page, int size, long total) {
+    return new PageData<>(content, page, size, total);
+  }
+
+  /**
+   * Create page data
+   *
+   * @param content Data content, if null then create empty list internal
+   * @param page Page index must be great than or equal 1
+   * @param size Page size must be great than or equal 1
+   * @param total Total count must be great than or equal 0
    */
   public PageData(List<T> content, int page, int size, long total) {
     if (page < 1) {
@@ -73,6 +87,15 @@ public final class PageData<T> {
       .map(fun)
       .collect(Collectors.toList());
     return new PageData<>(otherContent, page, size, total);
+  }
+
+  /**
+   * Returns true if the content is empty
+   *
+   * @return True if the content is empty
+   */
+  public boolean isEmpty() {
+    return content.isEmpty();
   }
 
   /**
