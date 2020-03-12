@@ -226,14 +226,14 @@ public final class Condition<T extends Entity<?>> {
     
     public Criteria llike(String property, String value) {
       if (StringUtils.isNotBlank(property) && value != null) {
-        criterion(column(property), " like ", "%" + value);
+        criterion(column(property), " like ", value + "%");
       }
       return this;
     }
     
     public Criteria rlike(String property, String value) {
       if (StringUtils.isNotBlank(property) && value != null) {
-        criterion(column(property), " like ", value + "%");
+        criterion(column(property), " like ", "%" + value);
       }
       return this;
     }
