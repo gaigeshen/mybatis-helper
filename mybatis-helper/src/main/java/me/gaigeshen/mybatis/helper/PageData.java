@@ -23,6 +23,7 @@ public final class PageData<T> {
 
   private boolean first;
   private boolean last;
+  private boolean empty;
 
   /**
    * Create page data
@@ -70,6 +71,7 @@ public final class PageData<T> {
 
     this.first = !(page > 1);
     this.last = !(this.pages > page);
+    this.empty = this.content.isEmpty();
   }
 
   /**
@@ -94,9 +96,7 @@ public final class PageData<T> {
    *
    * @return True if the content is empty
    */
-  public boolean isEmpty() {
-    return content.isEmpty();
-  }
+  public boolean isEmpty() { return this.empty; }
 
   /**
    * Returns data content
