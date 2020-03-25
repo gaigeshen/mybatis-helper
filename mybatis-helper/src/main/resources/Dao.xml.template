@@ -29,7 +29,7 @@
 			    <otherwise>
 			      and ${criterion.condition} #{criterion.value}
 			    </otherwise>
-			  </choose>              
+			  </choose>
             </foreach>
           </trim>
         </if>
@@ -122,6 +122,26 @@
 	  </foreach>
 	</set>where _idColumn_ = #{id}
   </update>
+  <update id="updateCondition">
+    update<include refid="table" />
+	<set>
+	  <foreach collection="update.values" item="value">
+	    <if test="value.value != null">
+	      ${value.mapping.column} = #{value.value},
+	    </if>
+	  </foreach>
+	</set>
+	<where>
+	  <foreach collection="condition.values" item="value">
+        <if test="value.value != null">
+          and ${value.mapping.column} = #{value.value}
+        </if>
+      </foreach>
+      <if test="condition.id != null">
+        and _idColumn_ = #{condition.id}
+      </if>
+	</where>
+  </update>
   <update id="updateNullable">
     update<include refid="table" />
 	<set>
@@ -129,5 +149,23 @@
 	    ${value.mapping.column} = #{value.value},
 	  </foreach>
 	</set>where _idColumn_ = #{id}
+  </update>
+  <update id="updateConditionNullable">
+    update<include refid="table" />
+	<set>
+	  <foreach collection="update.values" item="value">
+        ${value.mapping.column} = #{value.value},
+	  </foreach>
+	</set>
+	<where>
+	  <foreach collection="condition.values" item="value">
+        <if test="value.value != null">
+          and ${value.mapping.column} = #{value.value}
+        </if>
+      </foreach>
+      <if test="condition.id != null">
+        and _idColumn_ = #{condition.id}
+      </if>
+	</where>
   </update>
 </mapper>

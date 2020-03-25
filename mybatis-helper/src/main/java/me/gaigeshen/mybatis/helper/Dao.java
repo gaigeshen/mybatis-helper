@@ -1,5 +1,7 @@
 package me.gaigeshen.mybatis.helper;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -137,9 +139,25 @@ public interface Dao<T extends Entity<ID>, ID extends Serializable> {
   void update(T entity);
 
   /**
+   * Update entities by condition
+   *
+   * @param update The values to be update
+   * @param condition The condition
+   */
+  void updateCondition(@Param("update") T update, @Param("condition") T condition);
+
+  /**
    * Update entity by id, and null value properties update to null
    *
    * @param entity The entity with id value
    */
   void updateNullable(T entity);
+
+  /**
+   * Update entities by condition
+   *
+   * @param update The values to be update, and null value properties update to null, exclude id property
+   * @param condition The condition
+   */
+  void updateConditionNullable(@Param("update") T update, @Param("condition") T condition);
 }

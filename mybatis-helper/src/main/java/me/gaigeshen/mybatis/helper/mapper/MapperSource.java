@@ -336,6 +336,26 @@ public class MapperSource {
           "    </foreach>\n" +
           "  </set>where _idColumn_ = #{id}\n" +
           "  </update>\n" +
+          "  <update id=\"updateCondition\">\n" +
+          "    update<include refid=\"table\" />\n" +
+          "    <set>\n" +
+          "    <foreach collection=\"update.values\" item=\"value\">\n" +
+          "     <if test=\"value.value != null\">\n" +
+          "       ${value.mapping.column} = #{value.value},\n" +
+          "     </if>\n" +
+          "   </foreach>\n" +
+          " </set>\n" +
+          " <where>\n" +
+          "   <foreach collection=\"condition.values\" item=\"value\">\n" +
+          "        <if test=\"value.value != null\">\n" +
+          "          and ${value.mapping.column} = #{value.value}\n" +
+          "        </if>\n" +
+          "      </foreach>\n" +
+          "    <if test=\"condition.id != null\">\n" +
+          "        and _idColumn_ = #{condition.id}\n" +
+          "      </if>" +
+          " </where>\n" +
+          "  </update>" +
           "  <update id=\"updateNullable\">\n" +
           "    update<include refid=\"table\" />\n" +
           "  <set>\n" +
@@ -344,5 +364,23 @@ public class MapperSource {
           "    </foreach>\n" +
           "  </set>where _idColumn_ = #{id}\n" +
           "  </update>\n" +
+          "  <update id=\"updateConditionNullable\">\n" +
+          "    update<include refid=\"table\" />\n" +
+          " <set>\n" +
+          "   <foreach collection=\"update.values\" item=\"value\">\n" +
+          "        ${value.mapping.column} = #{value.value},\n" +
+          "   </foreach>\n" +
+          " </set>\n" +
+          " <where>\n" +
+          "   <foreach collection=\"condition.values\" item=\"value\">\n" +
+          "        <if test=\"value.value != null\">\n" +
+          "          and ${value.mapping.column} = #{value.value}\n" +
+          "        </if>\n" +
+          "      </foreach>\n" +
+          "      <if test=\"condition.id != null\">\n" +
+          "        and _idColumn_ = #{condition.id}\n" +
+          "      </if>\n" +
+          "  </where>\n" +
+          "  </update>"+
           "</mapper>";
 }

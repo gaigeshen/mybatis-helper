@@ -4,6 +4,6 @@
 <mapper>
     <!-- User defined mapper methods -->
     <select id="selectByUsername" resultMap="UserResultMap" >
-        select identity, username from user where username = #{username}
+        select identity, username, age from user where username = #{username}
     </select>
 </mapper>
