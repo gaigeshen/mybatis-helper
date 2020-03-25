@@ -64,21 +64,23 @@ Write your **custom methods** to mapper xml file
 
 ### Basic methods
 
-|     Method     |                         Description                          |
-| :------------: | :----------------------------------------------------------: |
-|    saveOne     |                       Save one entity                        |
-|      save      |                      Save many entities                      |
-|  saveOrUpdate  | Save or update entity, if the entity has id value, then update it |
-|   deleteOne    |                     Delete by entity id                      |
-|     delete     |                     Delete by conditions                     |
-|    findOne     |                      Find entity by id                       |
-|   findFirst    |               Find first record by conditions                |
-|      find      |                      Find by conditions                      |
-|     count      |             Returns records count by conditions              |
-|    sliceup     |             Returns paged entities by conditions             |
-|     exists     |           Check exists of entity id or conditions            |
-|     update     |                     Update entity by id                      |
-| updateNullable | Update entity by id, and null value properties update to null |
+|         Method          |                         Description                          |
+| :---------------------: | :----------------------------------------------------------: |
+|         saveOne         |                       Save one entity                        |
+|          save           |                      Save many entities                      |
+|      saveOrUpdate       | Save or update entity, if the entity has id value, then update it |
+|        deleteOne        |                     Delete by entity id                      |
+|         delete          |                     Delete by conditions                     |
+|         findOne         |                      Find entity by id                       |
+|        findFirst        |               Find first record by conditions                |
+|          find           |                      Find by conditions                      |
+|          count          |             Returns records count by conditions              |
+|         sliceup         |             Returns paged entities by conditions             |
+|         exists          |           Check exists of entity id or conditions            |
+|         update          |                     Update entity by id                      |
+|     updateCondition     |                 Update entities by condition                 |
+|     updateNullable      | Update entity by id, and null value properties update to null |
+| updateConditionNullable | Update entities by condition, and null value properties update to null |
 
 ### Condition
 
