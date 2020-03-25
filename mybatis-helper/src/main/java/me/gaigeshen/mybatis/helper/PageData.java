@@ -12,18 +12,30 @@ import java.util.stream.Collectors;
  * @param <T> The entity type
  */
 public final class PageData<T> {
-  
+
   private List<T> content;
-  
+
   private int page;
   private int size;
-  
+
   private long pages;
   private long total;
 
   private boolean first;
   private boolean last;
   private boolean empty;
+
+  /**
+   * Create empty page data
+   *
+   * @param page Page index must be great than or equal 1
+   * @param size Page size must be great than or equal 1
+   * @param <E> The element class type of the content
+   * @return The page data
+   */
+  public static <E> PageData<E> create(int page, int size) {
+    return create(Collections.emptyList(), page, size, 0);
+  }
 
   /**
    * Create page data
@@ -62,7 +74,7 @@ public final class PageData<T> {
     this.page = page;
     this.size = size;
     this.total = total;
-    
+
     long pages = total / size;
     if (total % size > 0) {
       pages++;
