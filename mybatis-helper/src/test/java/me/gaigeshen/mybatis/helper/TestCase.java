@@ -97,6 +97,12 @@ public class TestCase {
   }
 
   @Test
+  public void testFindAll() {
+    List<User> users = userDao.findAll();
+    System.out.println(users);
+  }
+
+  @Test
   public void testFind() {
     List<User> users = userDao.find(new Condition<>(User.class).where().like("username", "gaigeshen").end());
     System.out.println(users);

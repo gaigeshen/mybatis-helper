@@ -73,6 +73,15 @@ public interface Dao<T extends Entity<ID>, ID extends Serializable> {
   T findFirst(Condition<T> condition);
 
   /**
+   * Find all records
+   *
+   * @return All records
+   */
+  default List<T> findAll() {
+    return find(null);
+  }
+
+  /**
    * Find by conditions
    *
    * @param condition The conditions
