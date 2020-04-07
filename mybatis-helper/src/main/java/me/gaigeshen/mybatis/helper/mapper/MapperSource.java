@@ -336,6 +336,23 @@ public class MapperSource {
           "    </foreach>\n" +
           "  </set>where _idColumn_ = #{id}\n" +
           "  </update>\n" +
+          "  <update id=\"updateIncremental\">\n" +
+          "    update<include refid=\"table\" />\n" +
+          "  <set>\n" +
+          "    <foreach collection=\"update.values\" item=\"value\">\n" +
+          "      <if test=\"value.value != null\">\n" +
+          "        ${value.mapping.column} = ${value.mapping.column} + #{value.value},\n" +
+          "      </if>\n" +
+          "    </foreach>\n" +
+          "  </set>where _idColumn_ = #{update.id}\n" +
+          "  <if test=\"!canNegative\">" +
+          "    <foreach collection=\"update.values\" item=\"value\">\n" +
+          "      <if test=\"value.value != null and value.value lt 0\">\n" +
+          "        and ${value.mapping.column} >= #{value.value} * -1" +
+          "      </if>\n" +
+          "    </foreach>\n" +
+          "  </if>" +
+          "  </update>\n" +
           "  <update id=\"updateCondition\">\n" +
           "    update<include refid=\"table\" />\n" +
           "    <set>\n" +

@@ -141,6 +141,23 @@ public class TestCase {
   }
 
   @Test
+  public void testUpdateIncremental() {
+    User user = new User();
+    user.setAge(1);
+    user.setUsername("jack");
+    userDao.saveOne(user);
+
+    User update = new User();
+    update.setId(user.getId());
+    update.setAge(-2);
+    boolean result = userDao.updateIncremental(update, false);
+    Assert.assertFalse(result);
+
+    result = userDao.updateIncremental(update, true);
+    Assert.assertTrue(result);
+  }
+
+  @Test
   public void testUpdateCondition() {
     User update = new User();
     update.setUsername("gaigeshen");

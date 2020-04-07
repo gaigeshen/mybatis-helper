@@ -148,6 +148,15 @@ public interface Dao<T extends Entity<ID>, ID extends Serializable> {
   void update(T entity);
 
   /**
+   * Incremental update by id, can only update number properties
+   *
+   * @param entity The entity with id value
+   * @param canNegative <code>true</code>: Can update to negative value
+   * @return Update result
+   */
+  boolean updateIncremental(@Param("update") T entity, @Param("canNegative") boolean canNegative);
+
+  /**
    * Update entities by condition
    *
    * @param update The values to be update
@@ -169,4 +178,5 @@ public interface Dao<T extends Entity<ID>, ID extends Serializable> {
    * @param condition The condition
    */
   void updateConditionNullable(@Param("update") T update, @Param("condition") T condition);
+
 }
