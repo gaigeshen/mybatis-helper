@@ -144,8 +144,9 @@ public interface Dao<T extends Entity<ID>, ID extends Serializable> {
    * Update entity by id
    *
    * @param entity The entity with id value
+   * @return Update result
    */
-  void update(T entity);
+  boolean update(T entity);
 
   /**
    * Incremental update by id, can only update number properties
@@ -161,22 +162,25 @@ public interface Dao<T extends Entity<ID>, ID extends Serializable> {
    *
    * @param update The values to be update
    * @param condition The condition
+   * @return Update result
    */
-  void updateCondition(@Param("update") T update, @Param("condition") T condition);
+  boolean updateCondition(@Param("update") T update, @Param("condition") T condition);
 
   /**
    * Update entity by id, and null value properties update to null
    *
    * @param entity The entity with id value
+   * @return Update result
    */
-  void updateNullable(T entity);
+  boolean updateNullable(T entity);
 
   /**
    * Update entities by condition
    *
    * @param update The values to be update, and null value properties update to null, exclude id property
    * @param condition The condition
+   * @return Update result
    */
-  void updateConditionNullable(@Param("update") T update, @Param("condition") T condition);
+  boolean updateConditionNullable(@Param("update") T update, @Param("condition") T condition);
 
 }

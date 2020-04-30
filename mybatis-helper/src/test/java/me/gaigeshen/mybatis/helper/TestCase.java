@@ -137,7 +137,8 @@ public class TestCase {
     User user = new User();
     user.setId(2L);
     user.setUsername("gaigeshen2_update");
-    userDao.update(user);
+    boolean result = userDao.update(user);
+    Assert.assertFalse(result);
   }
 
   @Test
@@ -166,14 +167,24 @@ public class TestCase {
     condition.setAge(26);
     condition.setId(1L);
 
-    userDao.updateCondition(update, condition);
+    boolean result = userDao.updateCondition(update, condition);
+    Assert.assertFalse(result);
+
+    User newUser = new User();
+    newUser.setAge(26);
+    newUser.setUsername("gaigeshen_unchanged");
+    userDao.saveOne(newUser);
+
+    result = userDao.updateCondition(update, condition);
+    Assert.assertTrue(result);
   }
 
   @Test
   public void testUpdateNullable() {
     User user = new User();
     user.setId(2L);
-    userDao.updateNullable(user);
+    boolean result = userDao.updateNullable(user);
+    Assert.assertFalse(result);
   }
 
   @Test
@@ -181,7 +192,8 @@ public class TestCase {
     User update = new User();
     update.setUsername("gaigeshen");
 
-    userDao.updateConditionNullable(update, new User());
+    boolean result = userDao.updateConditionNullable(update, new User());
+    Assert.assertFalse(result);
   }
 
   @Test
