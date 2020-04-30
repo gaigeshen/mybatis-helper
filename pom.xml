@@ -6,7 +6,7 @@
 
     <groupId>me.gaigeshen.mybatis</groupId>
     <artifactId>mybatis-helper-parent</artifactId>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0</version>
     <modules>
         <module>mybatis-helper</module>
         <module>mybatis-helper-spring</module>
