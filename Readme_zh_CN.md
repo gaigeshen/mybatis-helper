@@ -75,7 +75,7 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
 |        findFirst        |                  查询符合条件的首个实体对象                  |
 |          find           |                         根据条件查询                         |
 |          count          |                         根据条件计数                         |
-|         sliceup         |                           分页查询                           |
+|         paging          |                           分页查询                           |
 |         exists          |               查询指定的主键值或者条件是否存在               |
 |         update          |                  根据主键值更新单个实体对象                  |
 |     updateCondition     |                   根据条件批量更新实体对象                   |

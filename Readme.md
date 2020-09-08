@@ -75,7 +75,7 @@ Write your **custom methods** to mapper xml file
 |        findFirst        |               Find first record by conditions                |
 |          find           |                      Find by conditions                      |
 |          count          |             Returns records count by conditions              |
-|         sliceup         |             Returns paged entities by conditions             |
+|         paging          |             Returns paged entities by conditions             |
 |         exists          |           Check exists of entity id or conditions            |
 |         update          |                     Update entity by id                      |
 |     updateCondition     |                 Update entities by condition                 |
