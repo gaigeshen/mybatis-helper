@@ -193,13 +193,11 @@ public class MapperSource {
     // And the dao interface has typed parameter of entity
     // So we can resolve actual type of entity class
     Type[] genericInterfaces = mapperClass.getGenericInterfaces();
-    if (genericInterfaces != null) {
-      for (Type genericInterface : genericInterfaces) {
-        if (genericInterface instanceof ParameterizedType) {
-          ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
-          if (parameterizedType.getRawType().equals(Dao.class)) {
-            return (Class<? extends Entity<?>>) parameterizedType.getActualTypeArguments()[0];
-          }
+    for (Type genericInterface : genericInterfaces) {
+      if (genericInterface instanceof ParameterizedType) {
+        ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
+        if (parameterizedType.getRawType().equals(Dao.class)) {
+          return (Class<? extends Entity<?>>) parameterizedType.getActualTypeArguments()[0];
         }
       }
     }
