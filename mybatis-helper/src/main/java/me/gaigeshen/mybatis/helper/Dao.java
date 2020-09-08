@@ -102,7 +102,9 @@ public interface Dao<T extends Entity<ID>, ID extends Serializable> {
    *
    * @param condition The conditions
    * @return Paged entities
+   * @deprecated Please use paging method instead
    */
+  @Deprecated
   default PageData<T> sliceup(Condition<T> condition) {
     List<T> data = find(condition);
     if (data == null) {
@@ -119,7 +121,12 @@ public interface Dao<T extends Entity<ID>, ID extends Serializable> {
    * @return Paged entities
    */
   default PageData<T> paging(Condition<T> condition) {
-    return sliceup(condition);
+    List<T> data = find(condition);
+    if (data == null) {
+      data = Collections.emptyList();
+    }
+    long total = count(condition);
+    return new PageData<>(data, condition.getPage(), condition.getSize(), total);
   }
 
   /**
