@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
  */
 public final class PageData<T> {
 
-  private List<T> content;
+  private final List<T> content;
 
-  private int page;
-  private int size;
+  private final int page;
+  private final int size;
 
-  private long pages;
-  private long total;
+  private final long pages;
+  private final long total;
 
-  private boolean first;
-  private boolean last;
-  private boolean empty;
+  private final boolean first;
+  private final boolean last;
+  private final boolean empty;
 
   /**
    * Create empty page data
