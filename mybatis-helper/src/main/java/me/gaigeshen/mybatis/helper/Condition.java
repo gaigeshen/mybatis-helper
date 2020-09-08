@@ -13,16 +13,16 @@ import java.util.stream.Collectors;
  * @param <T> The entity type
  */
 public final class Condition<T extends Entity<?>> {
-  
-  private Class<T> type;
+
+  private final Class<T> type;
+
+  private final List<Criteria> criterions = new ArrayList<>();
 
   private int page;
   private int size;
-  
+
   private String orderBy;
   private Sort sort;
-  
-  private List<Criteria> criterions = new ArrayList<>();
 
   /**
    * Create condition object with entity type
@@ -36,24 +36,40 @@ public final class Condition<T extends Entity<?>> {
     this.type = type;
   }
 
+  /**
+   * Create condition object with entity type
+   *
+   * @param type The entity type, must not be null
+   * @param <E> Entity type
+   * @return The condition
+   */
   public static <E extends Entity<?>> Condition<E> create(Class<E> type) {
     return new Condition<>(type);
   }
 
+  /**
+   * Create condition object with entity type and page and size
+   *
+   * @param type The entity type, must not be null
+   * @param page Page, must great than zero
+   * @param size Size, must great than zero
+   * @param <E> Entity type
+   * @return The condition
+   */
   public static <E extends Entity<?>> Condition<E> create(Class<E> type, int page, int size) {
     return new Condition<>(type).page(page).size(size);
   }
-  
+
   public Class<?> getType() { return type; }
 
   public int getPage() { return page; }
 
   public int getSize() { return size; }
-  
+
   int getSkip() { return (page - 1) * size; }
-  
+
   String getOrderBy() { return orderBy; }
-  
+
   String getSort() { return sort.name(); }
 
   /**
@@ -129,7 +145,7 @@ public final class Condition<T extends Entity<?>> {
   public Criteria where() {
     if (!criterions.isEmpty())
       throw new IllegalStateException("Duplicate call this method");
-    
+
     Criteria criteria = new Criteria();
     this.criterions.add(criteria);
     return criteria;
@@ -142,13 +158,13 @@ public final class Condition<T extends Entity<?>> {
    */
   public Condition<T> clear() {
     this.criterions.clear();
-    
+
     this.page = 0;
     this.size = 0;
-    
+
     this.orderBy = null;
     this.sort = null;
-    
+
     return this;
   }
 
@@ -168,19 +184,19 @@ public final class Condition<T extends Entity<?>> {
    * @author gaigeshen
    */
   public class Criteria {
-    
-    private List<Criterion> criteria = new ArrayList<>();
-    
+
+    private final List<Criterion> criteria = new ArrayList<>();
+
     public List<Criterion> getCriteria() {
       return this.criteria;
     }
-    
+
     public Criteria or() {
       Criteria criteria = new Criteria();
       criterions.add(criteria);
       return criteria;
     }
-    
+
     public Condition<T> end() {
       return Condition.this;
     }
@@ -188,84 +204,84 @@ public final class Condition<T extends Entity<?>> {
     public boolean isValid() {
       return this.criteria.size() > 0;
     }
-    
+
     public Criteria isNull(String property) {
       if (StringUtils.isNotBlank(property)) {
         criterion(column(property), " is null");
       }
       return this;
     }
-    
+
     public Criteria isNotNull(String property) {
       if (StringUtils.isNotBlank(property)) {
         criterion(column(property), " is not null");
       }
       return this;
     }
-    
+
     public Criteria equalTo(String property, Object value) {
       if (StringUtils.isNotBlank(property) && value != null) {
         criterion(column(property), " = ", value);
       }
       return this;
     }
-    
+
     public Criteria notEqualTo(String property, Object value) {
       if (StringUtils.isNotBlank(property) && value != null) {
         criterion(column(property), " != ", value);
       }
       return this;
     }
-    
+
     public Criteria like(String property, String value) {
       if (StringUtils.isNotBlank(property) && value != null) {
         criterion(column(property), " like ", "%" + value + "%");
       }
       return this;
     }
-    
+
     public Criteria llike(String property, String value) {
       if (StringUtils.isNotBlank(property) && value != null) {
         criterion(column(property), " like ", value + "%");
       }
       return this;
     }
-    
+
     public Criteria rlike(String property, String value) {
       if (StringUtils.isNotBlank(property) && value != null) {
         criterion(column(property), " like ", "%" + value);
       }
       return this;
     }
-    
+
     public Criteria between(String property, Object value1, Object value2) {
       if (StringUtils.isNotBlank(property) && value1 != null && value2 != null) {
         criterion(column(property), " between ", value1, value2);
       }
       return this;
     }
-    
+
     public Criteria greaterThan(String property, Object value) {
       if (StringUtils.isNotBlank(property) && value != null) {
         criterion(column(property), " > ", value);
       }
       return this;
     }
-    
+
     public Criteria greaterThanOrEqualTo(String property, Object value) {
       if (StringUtils.isNotBlank(property) && value != null) {
         criterion(column(property), " >= ", value);
       }
       return this;
     }
-    
+
     public Criteria lessThan(String property, Object value) {
       if (StringUtils.isNotBlank(property) && value != null) {
         criterion(column(property), " < ", value);
       }
       return this;
     }
-    
+
     public Criteria lessThanOrEqualTo(String property, Object value) {
       if (StringUtils.isNotBlank(property) && value != null) {
         criterion(column(property), " <= ", value);
@@ -291,15 +307,15 @@ public final class Condition<T extends Entity<?>> {
       }
       return this;
     }
-    
+
     private void criterion(String column, String operator) {
       criteria.add(new Criterion(column, operator));
     }
-    
+
     private void criterion(String column, String operator, Object value) {
       criteria.add(new Criterion(column, operator, value));
     }
-    
+
     private void criterion(String column, String operator, Object value1, Object value2) {
       criteria.add(new Criterion(column, operator, value1, value2));
     }
@@ -311,32 +327,32 @@ public final class Condition<T extends Entity<?>> {
    * @author gaigeshen
    */
   class Criterion {
-    
-    private String column;
-    private String operator;
+
+    private final String column;
+    private final String operator;
 
     private Object value;
     private Object secondValue;
-    
+
     private boolean noValue;
     private boolean betweenValue;
     private boolean listValue;
-    
+
     Criterion(String column, String operator) {
       this.column = column;
       this.operator = operator;
       this.noValue = true;
     }
-    
+
     Criterion(String column, String operator, Object value) {
       this.column = column;
       this.operator = operator;
       this.value = value;
-      
+
       if (value instanceof List<?>)
         this.listValue = true;
     }
-    
+
     Criterion(String column, String operator, Object value, Object secondValue) {
       this.column = column;
       this.operator = operator;
@@ -344,11 +360,11 @@ public final class Condition<T extends Entity<?>> {
       this.secondValue = secondValue;
       this.betweenValue = true;
     }
-    
+
     public String getColumn() { return column; }
 
     public String getOperator() { return operator; }
-    
+
     public String getCondition() { return getColumn() + getOperator(); }
 
     public Object getValue() { return value; }
