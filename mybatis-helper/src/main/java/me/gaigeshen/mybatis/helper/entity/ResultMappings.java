@@ -1,4 +1,4 @@
-package me.gaigeshen.mybatis.helper;
+package me.gaigeshen.mybatis.helper.entity;
 
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -11,10 +11,10 @@ import java.util.*;
  *
  * @author gaigeshen
  */
-final class ResultMappings {
+public class ResultMappings {
 
   private ResultMappings() {}
-  
+
   // All properties mapping include id
   private final static Map<Class<?>, List<ResultMapping>> mappings = new HashMap<>();
 
@@ -23,7 +23,7 @@ final class ResultMappings {
    *
    * @param configuration The mybatis configuration
    */
-  static void initialize(Configuration configuration) {
+  public static void initialize(Configuration configuration) {
     Collection<ResultMap> resultMaps = configuration.getResultMaps();
     resultMaps.forEach(rm -> {
       mappings.putIfAbsent(rm.getType(), rm.getResultMappings());
@@ -37,7 +37,7 @@ final class ResultMappings {
    * @param property The property name
    * @return Column name
    */
-  static String getColumn(Class<?> type, String property) {
+  public static String getColumn(Class<?> type, String property) {
     return getMapping(type, property).getColumn();
   }
 
@@ -64,7 +64,7 @@ final class ResultMappings {
    * @param type The type
    * @return {@link ResultMapping}s
    */
-  static List<ResultMapping> getMappings(Class<?> type) {
+  public static List<ResultMapping> getMappings(Class<?> type) {
     List<ResultMapping> mappings1 = mappings.get(type);
     if (mappings1 == null)
     	return Collections.emptyList();

@@ -1,6 +1,6 @@
 package me.gaigeshen.mybatis.helper.spring.entity;
 
-import me.gaigeshen.mybatis.helper.BaseEntity;
+import me.gaigeshen.mybatis.helper.entity.BaseEntity;
 import me.gaigeshen.mybatis.helper.annotations.Table;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;

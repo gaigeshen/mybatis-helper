@@ -1,5 +1,7 @@
 package me.gaigeshen.mybatis.helper;
 
+import me.gaigeshen.mybatis.helper.dao.Condition;
+import me.gaigeshen.mybatis.helper.dao.PageData;
 import me.gaigeshen.mybatis.helper.entity.User;
 import me.gaigeshen.mybatis.helper.mapper.UserDao;
 import org.apache.ibatis.io.Resources;

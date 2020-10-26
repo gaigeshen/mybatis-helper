@@ -1,6 +1,9 @@
 package me.gaigeshen.mybatis.helper.mapper;
 
 import me.gaigeshen.mybatis.helper.*;
+import me.gaigeshen.mybatis.helper.dao.Dao;
+import me.gaigeshen.mybatis.helper.entity.Entity;
+import me.gaigeshen.mybatis.helper.entity.EntityMetadata;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.ibatis.parsing.XNode;

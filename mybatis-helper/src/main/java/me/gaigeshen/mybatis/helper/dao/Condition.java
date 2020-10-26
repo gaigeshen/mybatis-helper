@@ -1,5 +1,7 @@
-package me.gaigeshen.mybatis.helper;
+package me.gaigeshen.mybatis.helper.dao;
 
+import me.gaigeshen.mybatis.helper.entity.Entity;
+import me.gaigeshen.mybatis.helper.entity.ResultMappings;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

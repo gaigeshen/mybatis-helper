@@ -1,5 +1,6 @@
-package me.gaigeshen.mybatis.helper;
+package me.gaigeshen.mybatis.helper.dao;
 
+import me.gaigeshen.mybatis.helper.entity.Entity;
 import org.apache.ibatis.annotations.Param;
 
 import java.io.Serializable;

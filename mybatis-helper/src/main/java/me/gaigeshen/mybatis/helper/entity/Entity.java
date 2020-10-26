@@ -1,4 +1,4 @@
-package me.gaigeshen.mybatis.helper;
+package me.gaigeshen.mybatis.helper.entity;
 
 import java.io.Serializable;
 

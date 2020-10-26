@@ -1,4 +1,4 @@
-package me.gaigeshen.mybatis.helper;
+package me.gaigeshen.mybatis.helper.entity;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -19,7 +19,7 @@ public abstract class BaseEntity<ID extends Serializable> implements Entity<ID> 
   private ID id;
 
   // Includes all result mappings but id properties
-  private transient List<ResultMappingValue> mappingValues;
+  private final transient List<ResultMappingValue> mappingValues;
 
   public BaseEntity() {
     mappingValues = new ArrayList<>();

@@ -1,4 +1,4 @@
-package me.gaigeshen.mybatis.helper;
+package me.gaigeshen.mybatis.helper.dao;
 
 import java.util.Collections;
 import java.util.List;
