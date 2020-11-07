@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 
+import java.util.Objects;
+
 /**
  * Mybatis helper auto-configuration
  *
@@ -40,8 +42,10 @@ public class MybatisHelperAutoConfiguration {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
       ApplicationContext applicationContext = event.getApplicationContext();
-      SqlSessionFactory sessionFactory = applicationContext.getBean(SqlSessionFactory.class);
-      MybatisHelperConfigurer.create().initializeResultMappings(sessionFactory.getConfiguration());
+      if (Objects.isNull(applicationContext.getParent())) {
+        SqlSessionFactory sessionFactory = applicationContext.getBean(SqlSessionFactory.class);
+        MybatisHelperConfigurer.create().initializeResultMappings(sessionFactory.getConfiguration());
+      }
     }
   }
 
