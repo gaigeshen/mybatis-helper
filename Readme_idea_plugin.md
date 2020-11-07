@@ -1,4 +1,4 @@
-##  IntelliJ IDEA Plugin
+##  IntelliJ IDEA Plugin (DELETED)
 
 ### Introduction
 

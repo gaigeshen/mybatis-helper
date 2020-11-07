@@ -1,4 +1,4 @@
-## IntelliJ IDEA Plugin
+## IntelliJ IDEA Plugin （已废弃）
 
 ### 简介
 
