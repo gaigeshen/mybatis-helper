@@ -185,37 +185,20 @@ Some "dao" methods requires condition object parameter, here are some examples f
    UserDao userDao = session.getMapper(UserDao.class);
    ```
 
-### How to configure with spring support
+### How to configure with spring boot support
 
-JUST replace `SqlSessionFactoryBean` to `MybatisHelperSqlSessionFactoryBean`, or add `MybatisHelperConfigurerProcessorBean` bean to your configuration. More information please see TestCase in mybatis-helper-spring module.
-
-```java
-@MapperScan("me.gaigeshen.mybatis.helper.spring.mapper")
-@Configuration
-public class MybatisHelperConfiguration {
-  // Replace SqlSessionFactoryBean to MybatisHelperSqlSessionFactoryBean
-  // to enable mybatis-helper-spring features
-  @Bean
-  public MybatisHelperSqlSessionFactoryBean mybatisHelperSqlSessionFactoryBean() throws Exception {
-    MybatisHelperSqlSessionFactoryBean factoryBean = new MybatisHelperSqlSessionFactoryBean();
-    factoryBean.setDataSource(dataSource());
-
-    org.apache.ibatis.session.Configuration cfg = new org.apache.ibatis.session.Configuration();
-    cfg.setUseGeneratedKeys(true);
-    factoryBean.setConfiguration(cfg);
-
-    return factoryBean;
-  }
-
-  @Bean
-  public DataSource dataSource() throws Exception {
-    JDBCDataSource dataSource = new JDBCDataSource();
-    dataSource.setUrl("jdbc:hsqldb:mem:testdb");
-    dataSource.setUser("SA");
-    dataSource.setPassword("");
-    initializeDatabase(dataSource);
-    return dataSource;
-  }
-}
+```xml
+<!-- Enable mybatis helper -->
+<dependency>
+    <groupId>me.gaigeshen.mybatis</groupId>
+    <artifactId>mybatis-helper-spring-boot-starter</artifactId>
+    <version>${version}</version> <!-- version must be great than or equals 1.7.0 -->
+</dependency>
+<!-- Auto configure mybatis -->
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>2.0.1</version>
+</dependency>
 ```
 
