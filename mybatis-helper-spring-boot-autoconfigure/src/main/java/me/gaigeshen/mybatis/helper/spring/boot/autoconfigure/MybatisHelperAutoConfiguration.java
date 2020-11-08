@@ -24,7 +24,7 @@ import java.util.Objects;
 public class MybatisHelperAutoConfiguration {
 
   @Bean
-  public MybatisHelperConfigurerProcessor mybatisHelperConfigurerProcessor() {
+  public static MybatisHelperConfigurerProcessor mybatisHelperConfigurerProcessor() {
     return new MybatisHelperConfigurerProcessor();
   }
 
