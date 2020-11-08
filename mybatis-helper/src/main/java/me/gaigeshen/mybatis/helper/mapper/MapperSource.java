@@ -1,6 +1,9 @@
 package me.gaigeshen.mybatis.helper.mapper;
 
 import me.gaigeshen.mybatis.helper.*;
+import me.gaigeshen.mybatis.helper.dao.Dao;
+import me.gaigeshen.mybatis.helper.entity.Entity;
+import me.gaigeshen.mybatis.helper.entity.EntityMetadata;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.ibatis.parsing.XNode;
@@ -193,13 +196,11 @@ public class MapperSource {
     // And the dao interface has typed parameter of entity
     // So we can resolve actual type of entity class
     Type[] genericInterfaces = mapperClass.getGenericInterfaces();
-    if (genericInterfaces != null) {
-      for (Type genericInterface : genericInterfaces) {
-        if (genericInterface instanceof ParameterizedType) {
-          ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
-          if (parameterizedType.getRawType().equals(Dao.class)) {
-            return (Class<? extends Entity<?>>) parameterizedType.getActualTypeArguments()[0];
-          }
+    for (Type genericInterface : genericInterfaces) {
+      if (genericInterface instanceof ParameterizedType) {
+        ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
+        if (parameterizedType.getRawType().equals(Dao.class)) {
+          return (Class<? extends Entity<?>>) parameterizedType.getActualTypeArguments()[0];
         }
       }
     }

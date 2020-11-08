@@ -6,10 +6,11 @@
 
     <groupId>me.gaigeshen.mybatis</groupId>
     <artifactId>mybatis-helper-parent</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0</version>
     <modules>
         <module>mybatis-helper</module>
-        <module>mybatis-helper-spring</module>
+        <module>mybatis-helper-spring-boot-autoconfigure</module>
+        <module>mybatis-helper-spring-boot-starter</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -43,20 +44,21 @@
 
     <properties>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <mybatis.version>3.5.1</mybatis.version>
         <mybatis.spring.version>2.0.1</mybatis.spring.version>
+        <commons.lang.version>3.8.1</commons.lang.version>
+        <slf4j.version>1.7.26</slf4j.version>
+        <logback.version>1.2.3</logback.version>
+        <hsqldb.version>2.4.1</hsqldb.version>
+        <junit.version>4.13.1</junit.version>
+        <spring.boot.version>2.1.4.RELEASE</spring.boot.version>
     </properties>
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.0.1</version>
@@ -70,7 +72,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.7</version>
                 <executions>
@@ -83,9 +84,8 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.1</version>
+                <version>1.6</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
@@ -99,14 +99,14 @@
             <plugin>
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
-                <version>1.13.0</version>
+                <version>1.15.0</version>
                 <configuration>
                     <gitFlowConfig>
                         <versionTagPrefix>v</versionTagPrefix>
                     </gitFlowConfig>
                     <versionDigitToIncrement>1</versionDigitToIncrement>
                     <commitDevelopmentVersionAtStart>true</commitDevelopmentVersionAtStart>
-                    <releaseRebase>true</releaseRebase>
+                    <releaseRebase>false</releaseRebase>
                     <skipTestProject>true</skipTestProject>
                 </configuration>
             </plugin>

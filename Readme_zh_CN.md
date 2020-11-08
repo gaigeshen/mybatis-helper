@@ -75,7 +75,7 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
 |        findFirst        |                  查询符合条件的首个实体对象                  |
 |          find           |                         根据条件查询                         |
 |          count          |                         根据条件计数                         |
-|         sliceup         |                           分页查询                           |
+|         paging          |                           分页查询                           |
 |         exists          |               查询指定的主键值或者条件是否存在               |
 |         update          |                  根据主键值更新单个实体对象                  |
 |     updateCondition     |                   根据条件批量更新实体对象                   |
@@ -185,35 +185,20 @@ mybatis 帮助工具， 这个工具已经经过 mybatis3.5.1 和 mybatis-spring
    UserDao userDao = session.getMapper(UserDao.class);
    ```
 
-### 如何在 spring 的支持下进行配置
+### 如何在 springboot 的支持下进行配置
 
-仅仅替换 `SqlSessionFactoryBean` 为 `MybatisHelperSqlSessionFactoryBean`, 或者添加`MybatisHelperConfigurerProcessorBean` 到你的配置中去，如果选择第二种方案，则原先的`SqlSessionFactoryBean` 不要去替换它。更多详情请查看源代码里面的测试样例。
-
-```java
-@MapperScan("me.gaigeshen.mybatis.helper.spring.mapper")
-@Configuration
-public class MybatisHelperConfiguration {
-  @Bean
-  public MybatisHelperSqlSessionFactoryBean mybatisHelperSqlSessionFactoryBean() throws Exception {
-    MybatisHelperSqlSessionFactoryBean factoryBean = new MybatisHelperSqlSessionFactoryBean();
-    factoryBean.setDataSource(dataSource());
-
-    org.apache.ibatis.session.Configuration cfg = new org.apache.ibatis.session.Configuration();
-    cfg.setUseGeneratedKeys(true);
-    factoryBean.setConfiguration(cfg);
-
-    return factoryBean;
-  }
-
-  @Bean
-  public DataSource dataSource() throws Exception {
-    JDBCDataSource dataSource = new JDBCDataSource();
-    dataSource.setUrl("jdbc:hsqldb:mem:testdb");
-    dataSource.setUser("SA");
-    dataSource.setPassword("");
-    initializeDatabase(dataSource);
-    return dataSource;
-  }
-}
+```xml
+<!-- 启用 mybatis-helper -->
+<dependency>
+    <groupId>me.gaigeshen.mybatis</groupId>
+    <artifactId>mybatis-helper-spring-boot-starter</artifactId>
+    <version>${version}</version> <!-- version must be great than or equals 1.7.0 -->
+</dependency>
+<!-- 自动配置 mybatis -->
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>2.0.1</version>
+</dependency>
 ```
 

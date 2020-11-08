@@ -1,5 +1,7 @@
 package me.gaigeshen.mybatis.helper;
 
+import me.gaigeshen.mybatis.helper.dao.Condition;
+import me.gaigeshen.mybatis.helper.dao.PageData;
 import me.gaigeshen.mybatis.helper.entity.User;
 import me.gaigeshen.mybatis.helper.mapper.UserDao;
 import org.apache.ibatis.io.Resources;
@@ -52,7 +54,7 @@ public class TestCase {
   }
 
   @After
-  public void destory() {
+  public void destroy() {
     userDao = null;
     sqlSessionFactory = null;
   }
@@ -115,8 +117,8 @@ public class TestCase {
   }
 
   @Test
-  public void testSliceup() {
-    PageData<User> users = userDao.sliceup(new Condition<>(User.class).page(1).size(10));
+  public void testPaging() {
+    PageData<User> users = userDao.paging(new Condition<>(User.class).page(1).size(10));
     System.out.println(users.getContent());
   }
 

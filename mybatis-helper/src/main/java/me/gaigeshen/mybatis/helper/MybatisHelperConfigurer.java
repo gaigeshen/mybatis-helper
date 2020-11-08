@@ -1,6 +1,7 @@
 package me.gaigeshen.mybatis.helper;
 
 import javassist.*;
+import me.gaigeshen.mybatis.helper.entity.ResultMappings;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
