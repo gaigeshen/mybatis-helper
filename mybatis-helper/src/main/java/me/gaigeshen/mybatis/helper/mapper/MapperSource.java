@@ -104,7 +104,7 @@ public class MapperSource {
     } catch (IOException e) {
       throw new MybatisHelperConfigurerException("Could not read user defined mapper xml resource", e);
     }
-    String userDefinedSource = new String(out.toByteArray());
+    String userDefinedSource = out.toString();
     if (mapperClass == null) {
       XPathParser parser = new XPathParser(userDefinedSource, true);
       XNode mapperNode = parser.evalNode("/mapper");
